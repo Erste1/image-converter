@@ -3,93 +3,1454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Image Converter - Free & Fast (PNG, JPG, WebP)</title>
-    <meta name="description" content="Free online image converter. Convert PNG, JPG, WebP and more. Online, fast and secure without uploading to server.">
-    <meta name="keywords" content="image converter, конвертер картинок, convertidor de imágenes, convertisseur d'images, 图像转换器">
+    <title>Free Online Image Converter - PNG, JPG, WebP | Fast & Secure</title>
+    <meta name="description" content="Free online image converter supporting PNG, JPG, JPEG, WebP, GIF, BMP. Batch conversion, resize images, compare file sizes. 100% privacy - works offline. No upload needed.">
+    <meta name="keywords" content="image converter, convert images online, PNG to JPG, JPG to PNG, WebP converter, batch image converter, resize images, конвертер изображений, convertidor de imágenes, convertisseur d'images, 图像转换器, Bildkonverter, コンバーター">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://yourdomain.com/">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Free Online Image Converter - Fast & Secure">
+    <meta property="og:description" content="Convert images between PNG, JPG, WebP formats. Batch processing, resize, and compare file sizes.">
+    <meta property="og:type" content="website">
+    
     <style>
-        :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #f5f5f7; color: #1d1d1f; }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 500px; text-align: center; }
-        #drop-zone { border: 2px dashed #007aff; border-radius: 15px; padding: 40px; margin-bottom: 20px; cursor: pointer; transition: background 0.3s; }
-        #drop-zone.hover { background: #e3efff; }
-        select, button { padding: 12px 20px; border-radius: 10px; border: 1px solid #d2d2d7; font-size: 16px; margin-top: 10px; width: 100%; }
-        button { background: #007aff; color: white; border: none; font-weight: 600; cursor: pointer; display: none; }
-        button:hover { background: #0056b3; }
-        #preview { max-width: 100%; height: auto; margin-top: 20px; border-radius: 10px; display: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #0066cc;
+            --accent-hover: #0052a3;
+            --success-color: #28a745;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-card: #2d2d2d;
+            --text-primary: #e9ecef;
+            --text-secondary: #adb5bd;
+            --border-color: #404040;
+            --accent-color: #4d9fff;
+            --accent-hover: #3385ff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .lang-selector, .theme-toggle {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .lang-selector:hover, .theme-toggle:hover {
+            border-color: var(--accent-color);
+        }
+
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-secondary);
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--accent-color);
+            background: var(--bg-primary);
+        }
+
+        .drop-zone-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .drop-zone-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-subtext {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .format-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .format-option:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .format-option.selected {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .format-option-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .format-option-desc {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .options-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .option-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .slider-container {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .files-list {
+            margin-top: 2rem;
+        }
+
+        .file-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .file-preview {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            word-break: break-all;
+        }
+
+        .file-size {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .size-comparison {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .size-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .size-original {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .size-converted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .size-savings {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .history-section {
+            margin-top: 3rem;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            background: var(--bg-card);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header-content {
+                justify-content: center;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .drop-zone {
+                padding: 2rem 1rem;
+            }
+
+            .format-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .file-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .format-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
+<header class="header">
+    <div class="header-content">
+        <a href="/" class="logo">
+            <span>🖼️</span>
+            <span data-i18n="title">Image Converter</span>
+        </a>
+        <div class="controls">
+            <select class="lang-selector" id="langSelector">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="zh">中文</option>
+                <option value="ja">日本語</option>
+                <option value="pt">Português</option>
+                <option value="it">Italiano</option>
+                <option value="ar">العربية</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </div>
+</header>
+
 <div class="container">
-    <h2>Image Converter</h2>
-    <div id="drop-zone">Drop image here or click to upload</div>
-    <input type="file" id="file-input" accept="image/*" style="display: none;">
-    
-    <div id="settings" style="display: none;">
-        <label for="format">Select format:</label>
-        <select id="format">
-            <option value="image/png">PNG</option>
-            <option value="image/jpeg">JPEG</option>
-            <option value="image/webp">WebP</option>
-        </select>
-        <img id="preview">
-        <button id="download-btn">Download Image</button>
+    <div class="hero">
+        <h1 data-i18n="heroTitle">Free Online Image Converter</h1>
+        <p data-i18n="heroDesc">Convert images to PNG, JPG, WebP and more. Fast, secure, and completely private - all processing happens in your browser.</p>
+    </div>
+
+    <div class="main-card">
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-icon">📁</div>
+            <div class="drop-zone-text" data-i18n="dropZoneText">Drop images here or click to upload</div>
+            <div class="drop-zone-subtext" data-i18n="dropZoneSubtext">Supports: PNG, JPG, JPEG, WebP, GIF, BMP | Multiple files allowed</div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+
+        <div id="settingsSection" class="hidden">
+            <h3 data-i18n="selectFormat" style="margin: 1.5rem 0 1rem;">Select Output Format</h3>
+            <div class="format-grid">
+                <div class="format-option" data-format="image/png">
+                    <div class="format-option-name">PNG</div>
+                    <div class="format-option-desc" data-i18n="formatPngDesc">Lossless, transparency</div>
+                </div>
+                <div class="format-option selected" data-format="image/jpeg">
+                    <div class="format-option-name">JPEG</div>
+                    <div class="format-option-desc" data-i18n="formatJpegDesc">Smaller size</div>
+                </div>
+                <div class="format-option" data-format="image/webp">
+                    <div class="format-option-name">WebP</div>
+                    <div class="format-option-desc" data-i18n="formatWebpDesc">Modern, efficient</div>
+                </div>
+                <div class="format-option" data-format="image/bmp">
+                    <div class="format-option-name">BMP</div>
+                    <div class="format-option-desc" data-i18n="formatBmpDesc">Uncompressed</div>
+                </div>
+            </div>
+
+            <div class="options-section">
+                <div class="option-row">
+                    <label class="option-label" data-i18n="quality">Quality:</label>
+                    <div class="slider-container">
+                        <input type="range" id="qualitySlider" min="10" max="100" value="90">
+                        <span id="qualityValue">90%</span>
+                    </div>
+                </div>
+
+                <div class="option-row">
+                    <label class="option-label" data-i18n="resize">Resize Images:</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="resizeCheckbox">
+                    </div>
+                </div>
+
+                <div class="option-row hidden" id="resizeOptions">
+                    <label class="option-label" data-i18n="width">Width:</label>
+                    <div class="slider-container">
+                        <input type="range" id="widthSlider" min="100" max="4000" value="1920" step="100">
+                        <span id="widthValue">1920px</span>
+                    </div>
+                </div>
+
+                <div class="option-row">
+                    <label class="option-label" data-i18n="maintainAspect">Maintain Aspect Ratio:</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="aspectRatioCheckbox" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filesList" class="files-list hidden"></div>
+
+        <div class="action-buttons hidden" id="actionButtons">
+            <button class="btn btn-primary btn-lg" id="convertBtn">
+                <span>⚡</span>
+                <span data-i18n="convertAll">Convert All</span>
+            </button>
+            <button class="btn btn-success btn-lg" id="downloadAllBtn">
+                <span>📥</span>
+                <span data-i18n="downloadAll">Download All</span>
+            </button>
+            <button class="btn btn-secondary" id="clearBtn">
+                <span>🗑️</span>
+                <span data-i18n="clear">Clear</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3 class="feature-title" data-i18n="featurePrivacyTitle">100% Privacy</h3>
+            <p class="feature-desc" data-i18n="featurePrivacyDesc">All processing happens in your browser. Your images never leave your device.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title" data-i18n="featureSpeedTitle">Lightning Fast</h3>
+            <p class="feature-desc" data-i18n="featureSpeedDesc">Instant conversion with no waiting. Convert multiple images at once.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3 class="feature-title" data-i18n="featureCompareTitle">Size Comparison</h3>
+            <p class="feature-desc" data-i18n="featureCompareDesc">See exactly how much space you save with each conversion.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📐</div>
+            <h3 class="feature-title" data-i18n="featureResizeTitle">Resize & Optimize</h3>
+            <p class="feature-desc" data-i18n="featureResizeDesc">Change dimensions and optimize quality before converting.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title" data-i18n="featureMobileTitle">Mobile Friendly</h3>
+            <p class="feature-desc" data-i18n="featureMobileDesc">Works perfectly on all devices - desktop, tablet, and mobile.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3 class="feature-title" data-i18n="featureOfflineTitle">Works Offline</h3>
+            <p class="feature-desc" data-i18n="featureOfflineDesc">No internet required after loading. Convert anywhere, anytime.</p>
+        </div>
+    </div>
+
+    <div class="history-section hidden" id="historySection">
+        <h3 data-i18n="conversionHistory">Conversion History</h3>
+        <div id="historyList"></div>
+        <button class="btn btn-secondary" id="clearHistoryBtn" data-i18n="clearHistory">Clear History</button>
     </div>
 </div>
 
+<footer class="footer">
+    <p data-i18n="footerText">© 2024 Image Converter. All conversions happen locally in your browser.</p>
+</footer>
+
 <script>
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const settings = document.getElementById('settings');
-    const formatSelect = document.getElementById('format');
-    const downloadBtn = document.getElementById('download-btn');
-    const preview = document.getElementById('preview');
+// Translations
+const translations = {
+    en: {
+        title: "Image Converter",
+        heroTitle: "Free Online Image Converter",
+        heroDesc: "Convert images to PNG, JPG, WebP and more. Fast, secure, and completely private - all processing happens in your browser.",
+        dropZoneText: "Drop images here or click to upload",
+        dropZoneSubtext: "Supports: PNG, JPG, JPEG, WebP, GIF, BMP | Multiple files allowed",
+        selectFormat: "Select Output Format",
+        formatPngDesc: "Lossless, transparency",
+        formatJpegDesc: "Smaller size",
+        formatWebpDesc: "Modern, efficient",
+        formatBmpDesc: "Uncompressed",
+        quality: "Quality:",
+        resize: "Resize Images:",
+        width: "Width:",
+        maintainAspect: "Maintain Aspect Ratio:",
+        convertAll: "Convert All",
+        downloadAll: "Download All",
+        clear: "Clear",
+        download: "Download",
+        convert: "Convert",
+        featurePrivacyTitle: "100% Privacy",
+        featurePrivacyDesc: "All processing happens in your browser. Your images never leave your device.",
+        featureSpeedTitle: "Lightning Fast",
+        featureSpeedDesc: "Instant conversion with no waiting. Convert multiple images at once.",
+        featureCompareTitle: "Size Comparison",
+        featureCompareDesc: "See exactly how much space you save with each conversion.",
+        featureResizeTitle: "Resize & Optimize",
+        featureResizeDesc: "Change dimensions and optimize quality before converting.",
+        featureMobileTitle: "Mobile Friendly",
+        featureMobileDesc: "Works perfectly on all devices - desktop, tablet, and mobile.",
+        featureOfflineTitle: "Works Offline",
+        featureOfflineDesc: "No internet required after loading. Convert anywhere, anytime.",
+        conversionHistory: "Conversion History",
+        clearHistory: "Clear History",
+        footerText: "© 2024 Image Converter. All conversions happen locally in your browser.",
+        original: "Original",
+        converted: "Converted",
+        saved: "saved"
+    },
+    ru: {
+        title: "Конвертер изображений",
+        heroTitle: "Бесплатный онлайн конвертер изображений",
+        heroDesc: "Конвертируйте изображения в PNG, JPG, WebP и другие форматы. Быстро, безопасно и полностью конфиденциально - вся обработка происходит в вашем браузере.",
+        dropZoneText: "Перетащите изображения сюда или нажмите для загрузки",
+        dropZoneSubtext: "Поддерживаются: PNG, JPG, JPEG, WebP, GIF, BMP | Можно несколько файлов",
+        selectFormat: "Выберите формат",
+        formatPngDesc: "Без потерь, прозрачность",
+        formatJpegDesc: "Меньший размер",
+        formatWebpDesc: "Современный, эффективный",
+        formatBmpDesc: "Несжатый",
+        quality: "Качество:",
+        resize: "Изменить размер:",
+        width: "Ширина:",
+        maintainAspect: "Сохранять пропорции:",
+        convertAll: "Конвертировать все",
+        downloadAll: "Скачать все",
+        clear: "Очистить",
+        download: "Скачать",
+        convert: "Конвертировать",
+        featurePrivacyTitle: "100% Конфиденциально",
+        featurePrivacyDesc: "Вся обработка происходит в вашем браузере. Ваши изображения не покидают ваше устройство.",
+        featureSpeedTitle: "Молниеносно",
+        featureSpeedDesc: "Мгновенная конвертация без ожидания. Конвертируйте несколько изображений сразу.",
+        featureCompareTitle: "Сравнение размера",
+        featureCompareDesc: "Точно видьте, сколько места вы экономите при каждой конвертации.",
+        featureResizeTitle: "Изменение размера",
+        featureResizeDesc: "Меняйте размеры и оптимизируйте качество перед конвертацией.",
+        featureMobileTitle: "Для мобильных",
+        featureMobileDesc: "Отлично работает на всех устройствах - компьютер, планшет и смартфон.",
+        featureOfflineTitle: "Работает оффлайн",
+        featureOfflineDesc: "Не требуется интернет после загрузки. Конвертируйте где угодно и когда угодно.",
+        conversionHistory: "История конвертаций",
+        clearHistory: "Очистить историю",
+        footerText: "© 2024 Конвертер изображений. Все конвертации происходят локально в вашем браузере.",
+        original: "Оригинал",
+        converted: "Сжато",
+        saved: "сохранено"
+    },
+    es: {
+        title: "Convertidor de Imágenes",
+        heroTitle: "Convertidor de Imágenes Online Gratis",
+        heroDesc: "Convierte imágenes a PNG, JPG, WebP y más. Rápido, seguro y completamente privado - todo el procesamiento ocurre en tu navegador.",
+        dropZoneText: "Arrastra imágenes aquí o haz clic para subir",
+        dropZoneSubtext: "Soporta: PNG, JPG, JPEG, WebP, GIF, BMP | Múltiples archivos permitidos",
+        selectFormat: "Seleccionar formato de salida",
+        formatPngDesc: "Sin pérdida, transparencia",
+        formatJpegDesc: "Tamaño menor",
+        formatWebpDesc: "Moderno, eficiente",
+        formatBmpDesc: "Sin comprimir",
+        quality: "Calidad:",
+        resize: "Redimensionar:",
+        width: "Ancho:",
+        maintainAspect: "Mantener proporción:",
+        convertAll: "Convertir todo",
+        downloadAll: "Descargar todo",
+        clear: "Limpiar",
+        download: "Descargar",
+        convert: "Convertir",
+        featurePrivacyTitle: "100% Privado",
+        featurePrivacyDesc: "Todo el procesamiento ocurre en tu navegador. Tus imágenes nunca salen de tu dispositivo.",
+        featureSpeedTitle: "Súper Rápido",
+        featureSpeedDesc: "Conversión instantánea sin esperas. Convierte múltiples imágenes a la vez.",
+        featureCompareTitle: "Comparación de Tamaño",
+        featureCompareDesc: "Ve exactamente cuánto espacio ahorras con cada conversión.",
+        featureResizeTitle: "Redimensionar y Optimizar",
+        featureResizeDesc: "Cambia dimensiones y optimiza la calidad antes de convertir.",
+        featureMobileTitle: "Compatible con Móvil",
+        featureMobileDesc: "Funciona perfectamente en todos los dispositivos - escritorio, tableta y móvil.",
+        featureOfflineTitle: "Funciona Sin Internet",
+        featureOfflineDesc: "No se requiere internet después de cargar. Convierte donde sea, cuando sea.",
+        conversionHistory: "Historial de Conversiones",
+        clearHistory: "Borrar Historial",
+        footerText: "© 2024 Convertidor de Imágenes. Todas las conversiones ocurren localmente en tu navegador.",
+        original: "Original",
+        converted: "Convertido",
+        saved: "ahorrado"
+    },
+    fr: {
+        title: "Convertisseur d'Images",
+        heroTitle: "Convertisseur d'Images en Ligne Gratuit",
+        heroDesc: "Convertissez des images en PNG, JPG, WebP et plus. Rapide, sécurisé et totalement privé - tout le traitement se fait dans votre navigateur.",
+        dropZoneText: "Déposez des images ici ou cliquez pour télécharger",
+        dropZoneSubtext: "Prend en charge: PNG, JPG, JPEG, WebP, GIF, BMP | Plusieurs fichiers autorisés",
+        selectFormat: "Sélectionner le format de sortie",
+        formatPngDesc: "Sans perte, transparence",
+        formatJpegDesc: "Taille réduite",
+        formatWebpDesc: "Moderne, efficace",
+        formatBmpDesc: "Non compressé",
+        quality: "Qualité:",
+        resize: "Redimensionner:",
+        width: "Largeur:",
+        maintainAspect: "Maintenir les proportions:",
+        convertAll: "Tout convertir",
+        downloadAll: "Tout télécharger",
+        clear: "Effacer",
+        download: "Télécharger",
+        convert: "Convertir",
+        featurePrivacyTitle: "100% Privé",
+        featurePrivacyDesc: "Tout le traitement se fait dans votre navigateur. Vos images ne quittent jamais votre appareil.",
+        featureSpeedTitle: "Ultra Rapide",
+        featureSpeedDesc: "Conversion instantanée sans attente. Convertissez plusieurs images à la fois.",
+        featureCompareTitle: "Comparaison de Taille",
+        featureCompareDesc: "Voyez exactement combien d'espace vous économisez avec chaque conversion.",
+        featureResizeTitle: "Redimensionner et Optimiser",
+        featureResizeDesc: "Modifiez les dimensions et optimisez la qualité avant de convertir.",
+        featureMobileTitle: "Compatible Mobile",
+        featureMobileDesc: "Fonctionne parfaitement sur tous les appareils - ordinateur, tablette et mobile.",
+        featureOfflineTitle: "Fonctionne Hors Ligne",
+        featureOfflineDesc: "Pas besoin d'internet après le chargement. Convertissez n'importe où, n'importe quand.",
+        conversionHistory: "Historique des Conversions",
+        clearHistory: "Effacer l'Historique",
+        footerText: "© 2024 Convertisseur d'Images. Toutes les conversions se font localement dans votre navigateur.",
+        original: "Original",
+        converted: "Converti",
+        saved: "économisé"
+    },
+    de: {
+        title: "Bildkonverter",
+        heroTitle: "Kostenloser Online-Bildkonverter",
+        heroDesc: "Konvertieren Sie Bilder in PNG, JPG, WebP und mehr. Schnell, sicher und völlig privat - alle Verarbeitung erfolgt in Ihrem Browser.",
+        dropZoneText: "Bilder hier ablegen oder zum Hochladen klicken",
+        dropZoneSubtext: "Unterstützt: PNG, JPG, JPEG, WebP, GIF, BMP | Mehrere Dateien erlaubt",
+        selectFormat: "Ausgabeformat wählen",
+        formatPngDesc: "Verlustfrei, Transparenz",
+        formatJpegDesc: "Kleinere Größe",
+        formatWebpDesc: "Modern, effizient",
+        formatBmpDesc: "Unkomprimiert",
+        quality: "Qualität:",
+        resize: "Größe ändern:",
+        width: "Breite:",
+        maintainAspect: "Seitenverhältnis beibehalten:",
+        convertAll: "Alle konvertieren",
+        downloadAll: "Alle herunterladen",
+        clear: "Löschen",
+        download: "Herunterladen",
+        convert: "Konvertieren",
+        featurePrivacyTitle: "100% Privat",
+        featurePrivacyDesc: "Alle Verarbeitung erfolgt in Ihrem Browser. Ihre Bilder verlassen nie Ihr Gerät.",
+        featureSpeedTitle: "Blitzschnell",
+        featureSpeedDesc: "Sofortige Konvertierung ohne Warten. Konvertieren Sie mehrere Bilder gleichzeitig.",
+        featureCompareTitle: "Größenvergleich",
+        featureCompareDesc: "Sehen Sie genau, wie viel Platz Sie mit jeder Konvertierung sparen.",
+        featureResizeTitle: "Größe ändern & Optimieren",
+        featureResizeDesc: "Ändern Sie Abmessungen und optimieren Sie die Qualität vor der Konvertierung.",
+        featureMobileTitle: "Mobilfreundlich",
+        featureMobileDesc: "Funktioniert perfekt auf allen Geräten - Desktop, Tablet und Handy.",
+        featureOfflineTitle: "Funktioniert Offline",
+        featureOfflineDesc: "Kein Internet nach dem Laden erforderlich. Konvertieren Sie überall und jederzeit.",
+        conversionHistory: "Konvertierungsverlauf",
+        clearHistory: "Verlauf löschen",
+        footerText: "© 2024 Bildkonverter. Alle Konvertierungen erfolgen lokal in Ihrem Browser.",
+        original: "Original",
+        converted: "Konvertiert",
+        saved: "gespart"
+    },
+    zh: {
+        title: "图像转换器",
+        heroTitle: "免费在线图像转换器",
+        heroDesc: "将图像转换为PNG、JPG、WebP等格式。快速、安全、完全私密 - 所有处理都在您的浏览器中进行。",
+        dropZoneText: "将图像拖放到此处或点击上传",
+        dropZoneSubtext: "支持：PNG、JPG、JPEG、WebP、GIF、BMP | 允许多个文件",
+        selectFormat: "选择输出格式",
+        formatPngDesc: "无损，透明度",
+        formatJpegDesc: "更小的尺寸",
+        formatWebpDesc: "现代、高效",
+        formatBmpDesc: "未压缩",
+        quality: "质量：",
+        resize: "调整大小：",
+        width: "宽度：",
+        maintainAspect: "保持纵横比：",
+        convertAll: "全部转换",
+        downloadAll: "全部下载",
+        clear: "清除",
+        download: "下载",
+        convert: "转换",
+        featurePrivacyTitle: "100%隐私",
+        featurePrivacyDesc: "所有处理都在您的浏览器中进行。您的图像永远不会离开您的设备。",
+        featureSpeedTitle: "闪电般快速",
+        featureSpeedDesc: "即时转换，无需等待。一次转换多张图像。",
+        featureCompareTitle: "大小比较",
+        featureCompareDesc: "准确了解每次转换节省了多少空间。",
+        featureResizeTitle: "调整大小和优化",
+        featureResizeDesc: "在转换前更改尺寸并优化质量。",
+        featureMobileTitle: "移动友好",
+        featureMobileDesc: "在所有设备上完美运行 - 台式机、平板电脑和手机。",
+        featureOfflineTitle: "离线工作",
+        featureOfflineDesc: "加载后无需互联网。随时随地转换。",
+        conversionHistory: "转换历史",
+        clearHistory: "清除历史",
+        footerText: "© 2024 图像转换器。所有转换都在您的浏览器中本地进行。",
+        original: "原始",
+        converted: "转换后",
+        saved: "已保存"
+    },
+    ja: {
+        title: "画像コンバーター",
+        heroTitle: "無料オンライン画像コンバーター",
+        heroDesc: "画像をPNG、JPG、WebPなどに変換。高速、安全、完全にプライベート - すべての処理はブラウザで行われます。",
+        dropZoneText: "画像をここにドロップするかクリックしてアップロード",
+        dropZoneSubtext: "対応：PNG、JPG、JPEG、WebP、GIF、BMP | 複数ファイル可",
+        selectFormat: "出力形式を選択",
+        formatPngDesc: "ロスレス、透明度",
+        formatJpegDesc: "サイズ小",
+        formatWebpDesc: "モダン、効率的",
+        formatBmpDesc: "非圧縮",
+        quality: "品質：",
+        resize: "リサイズ：",
+        width: "幅：",
+        maintainAspect: "縦横比を維持：",
+        convertAll: "すべて変換",
+        downloadAll: "すべてダウンロード",
+        clear: "クリア",
+        download: "ダウンロード",
+        convert: "変換",
+        featurePrivacyTitle: "100%プライバシー",
+        featurePrivacyDesc: "すべての処理はブラウザで行われます。画像がデバイスから離れることはありません。",
+        featureSpeedTitle: "超高速",
+        featureSpeedDesc: "待ち時間なしで即座に変換。複数の画像を一度に変換。",
+        featureCompareTitle: "サイズ比較",
+        featureCompareDesc: "各変換でどれだけスペースを節約できるか正確に確認。",
+        featureResizeTitle: "リサイズと最適化",
+        featureResizeDesc: "変換前に寸法を変更し、品質を最適化。",
+        featureMobileTitle: "モバイルフレンドリー",
+        featureMobileDesc: "すべてのデバイスで完璧に動作 - デスクトップ、タブレット、モバイル。",
+        featureOfflineTitle: "オフラインで動作",
+        featureOfflineDesc: "読み込み後はインターネット不要。いつでもどこでも変換。",
+        conversionHistory: "変換履歴",
+        clearHistory: "履歴をクリア",
+        footerText: "© 2024 画像コンバーター。すべての変換はブラウザでローカルに行われます。",
+        original: "オリジナル",
+        converted: "変換後",
+        saved: "節約"
+    },
+    pt: {
+        title: "Conversor de Imagens",
+        heroTitle: "Conversor de Imagens Online Grátis",
+        heroDesc: "Converta imagens para PNG, JPG, WebP e mais. Rápido, seguro e completamente privado - todo processamento acontece no seu navegador.",
+        dropZoneText: "Solte imagens aqui ou clique para fazer upload",
+        dropZoneSubtext: "Suporta: PNG, JPG, JPEG, WebP, GIF, BMP | Vários arquivos permitidos",
+        selectFormat: "Selecionar formato de saída",
+        formatPngDesc: "Sem perda, transparência",
+        formatJpegDesc: "Tamanho menor",
+        formatWebpDesc: "Moderno, eficiente",
+        formatBmpDesc: "Não comprimido",
+        quality: "Qualidade:",
+        resize: "Redimensionar:",
+        width: "Largura:",
+        maintainAspect: "Manter proporção:",
+        convertAll: "Converter tudo",
+        downloadAll: "Baixar tudo",
+        clear: "Limpar",
+        download: "Baixar",
+        convert: "Converter",
+        featurePrivacyTitle: "100% Privado",
+        featurePrivacyDesc: "Todo processamento acontece no seu navegador. Suas imagens nunca saem do seu dispositivo.",
+        featureSpeedTitle: "Super Rápido",
+        featureSpeedDesc: "Conversão instantânea sem espera. Converta várias imagens de uma vez.",
+        featureCompareTitle: "Comparação de Tamanho",
+        featureCompareDesc: "Veja exatamente quanto espaço você economiza com cada conversão.",
+        featureResizeTitle: "Redimensionar e Otimizar",
+        featureResizeDesc: "Altere dimensões e otimize a qualidade antes de converter.",
+        featureMobileTitle: "Compatível com Mobile",
+        featureMobileDesc: "Funciona perfeitamente em todos os dispositivos - desktop, tablet e celular.",
+        featureOfflineTitle: "Funciona Offline",
+        featureOfflineDesc: "Sem necessidade de internet após carregar. Converta onde e quando quiser.",
+        conversionHistory: "Histórico de Conversões",
+        clearHistory: "Limpar Histórico",
+        footerText: "© 2024 Conversor de Imagens. Todas as conversões acontecem localmente no seu navegador.",
+        original: "Original",
+        converted: "Convertido",
+        saved: "economizado"
+    },
+    it: {
+        title: "Convertitore di Immagini",
+        heroTitle: "Convertitore di Immagini Online Gratuito",
+        heroDesc: "Converti immagini in PNG, JPG, WebP e altro. Veloce, sicuro e completamente privato - tutta l'elaborazione avviene nel tuo browser.",
+        dropZoneText: "Trascina le immagini qui o clicca per caricare",
+        dropZoneSubtext: "Supporta: PNG, JPG, JPEG, WebP, GIF, BMP | Più file consentiti",
+        selectFormat: "Seleziona formato di output",
+        formatPngDesc: "Senza perdita, trasparenza",
+        formatJpegDesc: "Dimensione minore",
+        formatWebpDesc: "Moderno, efficiente",
+        formatBmpDesc: "Non compresso",
+        quality: "Qualità:",
+        resize: "Ridimensiona:",
+        width: "Larghezza:",
+        maintainAspect: "Mantieni proporzioni:",
+        convertAll: "Converti tutto",
+        downloadAll: "Scarica tutto",
+        clear: "Cancella",
+        download: "Scarica",
+        convert: "Converti",
+        featurePrivacyTitle: "100% Privacy",
+        featurePrivacyDesc: "Tutta l'elaborazione avviene nel tuo browser. Le tue immagini non lasciano mai il tuo dispositivo.",
+        featureSpeedTitle: "Velocissimo",
+        featureSpeedDesc: "Conversione istantanea senza attesa. Converti più immagini contemporaneamente.",
+        featureCompareTitle: "Confronto Dimensioni",
+        featureCompareDesc: "Vedi esattamente quanto spazio risparmi con ogni conversione.",
+        featureResizeTitle: "Ridimensiona e Ottimizza",
+        featureResizeDesc: "Cambia dimensioni e ottimizza la qualità prima di convertire.",
+        featureMobileTitle: "Mobile Friendly",
+        featureMobileDesc: "Funziona perfettamente su tutti i dispositivi - desktop, tablet e mobile.",
+        featureOfflineTitle: "Funziona Offline",
+        featureOfflineDesc: "Nessuna connessione internet necessaria dopo il caricamento. Converti ovunque, in qualsiasi momento.",
+        conversionHistory: "Cronologia Conversioni",
+        clearHistory: "Cancella Cronologia",
+        footerText: "© 2024 Convertitore di Immagini. Tutte le conversioni avvengono localmente nel tuo browser.",
+        original: "Originale",
+        converted: "Convertito",
+        saved: "risparmiato"
+    },
+    ar: {
+        title: "محول الصور",
+        heroTitle: "محول الصور المجاني عبر الإنترنت",
+        heroDesc: "قم بتحويل الصور إلى PNG و JPG و WebP والمزيد. سريع وآمن وخاص تمامًا - تتم جميع المعالجة في متصفحك.",
+        dropZoneText: "اسحب الصور هنا أو انقر للتحميل",
+        dropZoneSubtext: "يدعم: PNG، JPG، JPEG، WebP، GIF، BMP | ملفات متعددة مسموح بها",
+        selectFormat: "اختر تنسيق الإخراج",
+        formatPngDesc: "بدون فقدان، شفافية",
+        formatJpegDesc: "حجم أصغر",
+        formatWebpDesc: "حديث، فعال",
+        formatBmpDesc: "غير مضغوط",
+        quality: "الجودة:",
+        resize: "تغيير الحجم:",
+        width: "العرض:",
+        maintainAspect: "الحفاظ على نسبة العرض:",
+        convertAll: "تحويل الكل",
+        downloadAll: "تنزيل الكل",
+        clear: "مسح",
+        download: "تنزيل",
+        convert: "تحويل",
+        featurePrivacyTitle: "100٪ خاص",
+        featurePrivacyDesc: "تتم جميع المعالجة في متصفحك. لن تترك صورك جهازك أبدًا.",
+        featureSpeedTitle: "سريع للغاية",
+        featureSpeedDesc: "تحويل فوري بدون انتظار. قم بتحويل صور متعددة في وقت واحد.",
+        featureCompareTitle: "مقارنة الحجم",
+        featureCompareDesc: "شاهد بالضبط مقدار المساحة التي توفرها مع كل تحويل.",
+        featureResizeTitle: "تغيير الحجم والتحسين",
+        featureResizeDesc: "قم بتغيير الأبعاد وتحسين الجودة قبل التحويل.",
+        featureMobileTitle: "متوافق مع الجوال",
+        featureMobileDesc: "يعمل بشكل مثالي على جميع الأجهزة - سطح المكتب والجهاز اللوحي والجوال.",
+        featureOfflineTitle: "يعمل دون اتصال",
+        featureOfflineDesc: "لا يلزم الاتصال بالإنترنت بعد التحميل. قم بالتحويل في أي مكان وفي أي وقت.",
+        conversionHistory: "سجل التحويلات",
+        clearHistory: "مسح السجل",
+        footerText: "© 2024 محول الصور. تتم جميع التحويلات محليًا في متصفحك.",
+        original: "الأصلي",
+        converted: "المحول",
+        saved: "محفوظ"
+    },
+    hi: {
+        title: "छवि परिवर्तक",
+        heroTitle: "मुफ्त ऑनलाइन छवि परिवर्तक",
+        heroDesc: "छवियों को PNG, JPG, WebP और अधिक में परिवर्तित करें। तेज़, सुरक्षित और पूरी तरह से निजी - सभी प्रसंस्करण आपके ब्राउज़र में होता है।",
+        dropZoneText: "छवियों को यहां खींचें या अपलोड करने के लिए क्लिक करें",
+        dropZoneSubtext: "समर्थित: PNG, JPG, JPEG, WebP, GIF, BMP | एकाधिक फाइलों की अनुमति है",
+        selectFormat: "आउटपुट प्रारूप चुनें",
+        formatPngDesc: "हानिरहित, पारदर्शिता",
+        formatJpegDesc: "छोटा आकार",
+        formatWebpDesc: "आधुनिक, कुशल",
+        formatBmpDesc: "असंपीड़ित",
+        quality: "गुणवत्ता:",
+        resize: "आकार बदलें:",
+        width: "चौड़ाई:",
+        maintainAspect: "पहलू अनुपात बनाए रखें:",
+        convertAll: "सभी को परिवर्तित करें",
+        downloadAll: "सभी डाउनलोड करें",
+        clear: "साफ़ करें",
+        download: "डाउनलोड",
+        convert: "परिवर्तित करें",
+        featurePrivacyTitle: "100% गोपनीयता",
+        featurePrivacyDesc: "सभी प्रसंस्करण आपके ब्राउज़र में होता है। आपकी छवियां कभी भी आपके डिवाइस को नहीं छोड़तीं।",
+        featureSpeedTitle: "बिजली की तेजी",
+        featureSpeedDesc: "बिना प्रतीक्षा के तत्काल रूपांतरण। एक बार में कई छवियां परिवर्तित करें।",
+        featureCompareTitle: "आकार तुलना",
+        featureCompareDesc: "प्रत्येक रूपांतरण के साथ आप कितनी जगह बचाते हैं, यह देखें।",
+        featureResizeTitle: "आकार बदलें और अनुकूलित करें",
+        featureResizeDesc: "परिवर्तित करने से पहले आयाम बदलें और गुणवत्ता को अनुकूलित करें।",
+        featureMobileTitle: "मोबाइल के अनुकूल",
+        featureMobileDesc: "सभी उपकरणों पर पूरी तरह से काम करता है - डेस्कटॉप, टैबलेट और मोबाइल।",
+        featureOfflineTitle: "ऑफ़लाइन काम करता है",
+        featureOfflineDesc: "लोड होने के बाद इंटरनेट की आवश्यकता नहीं। कहीं भी, कभी भी परिवर्तित करें।",
+        conversionHistory: "रूपांतरण इतिहास",
+        clearHistory: "इतिहास साफ़ करें",
+        footerText: "© 2024 छवि परिवर्तक। सभी रूपांतरण आपके ब्राउज़र में स्थानीय रूप से होते हैं।",
+        original: "मूल",
+        converted: "परिवर्तित",
+        saved: "बचाया"
+    }
+};
 
-    let originalImage = null;
-    let fileName = 'converted-image';
+// State
+let files = [];
+let selectedFormat = 'image/jpeg';
+let currentLang = 'en';
+let currentTheme = 'light';
 
+// Elements
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const settingsSection = document.getElementById('settingsSection');
+const filesList = document.getElementById('filesList');
+const actionButtons = document.getElementById('actionButtons');
+const formatOptions = document.querySelectorAll('.format-option');
+const qualitySlider = document.getElementById('qualitySlider');
+const qualityValue = document.getElementById('qualityValue');
+const resizeCheckbox = document.getElementById('resizeCheckbox');
+const resizeOptions = document.getElementById('resizeOptions');
+const widthSlider = document.getElementById('widthSlider');
+const widthValue = document.getElementById('widthValue');
+const aspectRatioCheckbox = document.getElementById('aspectRatioCheckbox');
+const convertBtn = document.getElementById('convertBtn');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const clearBtn = document.getElementById('clearBtn');
+const langSelector = document.getElementById('langSelector');
+const themeToggle = document.getElementById('themeToggle');
+const historySection = document.getElementById('historySection');
+const historyList = document.getElementById('historyList');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+// Initialize
+function init() {
+    loadTheme();
+    loadLanguage();
+    loadHistory();
+    setupEventListeners();
+}
+
+// Theme
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    currentTheme = savedTheme;
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon();
+}
+
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    themeToggle.querySelector('.theme-icon').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+}
+
+// Language
+function loadLanguage() {
+    const savedLang = localStorage.getItem('language') || navigator.language.split('-')[0] || 'en';
+    currentLang = translations[savedLang] ? savedLang : 'en';
+    langSelector.value = currentLang;
+    updateLanguage();
+}
+
+function updateLanguage() {
+    const t = translations[currentLang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+            el.textContent = t[key];
+        }
+    });
+    document.documentElement.lang = currentLang;
+    if (currentLang === 'ar') {
+        document.documentElement.dir = 'rtl';
+    } else {
+        document.documentElement.dir = 'ltr';
+    }
+}
+
+// Event Listeners
+function setupEventListeners() {
     dropZone.onclick = () => fileInput.click();
-    fileInput.onchange = (e) => handleFile(e.target.files[0]);
-
-    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('hover'); };
-    dropZone.ondragleave = () => dropZone.classList.remove('hover');
+    fileInput.onchange = (e) => handleFiles(e.target.files);
+    
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    };
+    
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    
     dropZone.ondrop = (e) => {
         e.preventDefault();
-        dropZone.classList.remove('hover');
-        handleFile(e.dataTransfer.files[0]);
+        dropZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
     };
 
-    function handleFile(file) {
-        if (!file || !file.type.startsWith('image/')) return;
-        fileName = file.name.split('.')[0];
+    formatOptions.forEach(option => {
+        option.onclick = () => selectFormat(option);
+    });
+
+    qualitySlider.oninput = () => {
+        qualityValue.textContent = qualitySlider.value + '%';
+    };
+
+    widthSlider.oninput = () => {
+        widthValue.textContent = widthSlider.value + 'px';
+    };
+
+    resizeCheckbox.onchange = () => {
+        resizeOptions.classList.toggle('hidden', !resizeCheckbox.checked);
+    };
+
+    convertBtn.onclick = convertAll;
+    downloadAllBtn.onclick = downloadAll;
+    clearBtn.onclick = clearAll;
+    
+    langSelector.onchange = (e) => {
+        currentLang = e.target.value;
+        localStorage.setItem('language', currentLang);
+        updateLanguage();
+    };
+
+    themeToggle.onclick = toggleTheme;
+    clearHistoryBtn.onclick = clearHistory;
+}
+
+// Format Selection
+function selectFormat(option) {
+    formatOptions.forEach(opt => opt.classList.remove('selected'));
+    option.classList.add('selected');
+    selectedFormat = option.dataset.format;
+}
+
+// File Handling
+function handleFiles(fileList) {
+    const newFiles = Array.from(fileList).filter(file => file.type.startsWith('image/'));
+    
+    newFiles.forEach(file => {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                originalImage = img;
-                preview.src = event.target.result;
-                preview.style.display = 'block';
-                settings.style.display = 'block';
-                downloadBtn.style.display = 'block';
+                files.push({
+                    file: file,
+                    name: file.name.split('.')[0],
+                    originalSize: file.size,
+                    image: img,
+                    dataUrl: e.target.result,
+                    converted: null,
+                    convertedSize: null
+                });
+                renderFiles();
             };
-            img.src = event.target.result;
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
+    });
+
+    settingsSection.classList.remove('hidden');
+    actionButtons.classList.remove('hidden');
+}
+
+// Render Files
+function renderFiles() {
+    if (files.length === 0) {
+        filesList.classList.add('hidden');
+        return;
     }
 
-    downloadBtn.onclick = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = originalImage.width;
-        canvas.height = originalImage.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(originalImage, 0, 0);
-        const selectedFormat = formatSelect.value;
-        const extension = selectedFormat.split('/')[1];
-        const link = document.createElement('a');
-        link.download = `${fileName}.${extension}`;
-        link.href = canvas.toDataURL(selectedFormat, 0.9);
-        link.click();
-    };
+    filesList.classList.remove('hidden');
+    filesList.innerHTML = files.map((file, index) => `
+        <div class="file-item">
+            <img src="${file.dataUrl}" class="file-preview" alt="${file.name}">
+            <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">${formatFileSize(file.originalSize)}</div>
+                ${file.convertedSize ? `
+                    <div class="size-comparison">
+                        <span class="size-badge size-original">${translations[currentLang].original}: ${formatFileSize(file.originalSize)}</span>
+                        <span class="size-badge size-converted">${translations[currentLang].converted}: ${formatFileSize(file.convertedSize)}</span>
+                        <span class="size-savings">↓ ${((1 - file.convertedSize / file.originalSize) * 100).toFixed(1)}% ${translations[currentLang].saved}</span>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="file-actions">
+                ${file.converted ? `
+                    <button class="btn btn-success" onclick="downloadSingle(${index})">
+                        <span>📥</span>
+                        <span data-i18n="download">${translations[currentLang].download}</span>
+                    </button>
+                ` : `
+                    <button class="btn btn-primary" onclick="convertSingle(${index})">
+                        <span>⚡</span>
+                        <span data-i18n="convert">${translations[currentLang].convert}</span>
+                    </button>
+                `}
+                <button class="btn btn-danger" onclick="removeFile(${index})">
+                    <span>🗑️</span>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Convert Single
+function convertSingle(index) {
+    const file = files[index];
+    const converted = convertImage(file.image);
+    file.converted = converted.dataUrl;
+    file.convertedSize = converted.size;
+    renderFiles();
+    saveToHistory(file);
+}
+
+// Convert All
+function convertAll() {
+    files.forEach((file, index) => {
+        if (!file.converted) {
+            convertSingle(index);
+        }
+    });
+}
+
+// Convert Image
+function convertImage(img) {
+    const canvas = document.createElement('canvas');
+    let width = img.width;
+    let height = img.height;
+
+    if (resizeCheckbox.checked) {
+        width = parseInt(widthSlider.value);
+        if (aspectRatioCheckbox.checked) {
+            height = Math.round(height * (width / img.width));
+        }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    
+    const quality = qualitySlider.value / 100;
+    const dataUrl = canvas.toDataURL(selectedFormat, quality);
+    
+    // Calculate approximate size
+    const base64Length = dataUrl.split(',')[1].length;
+    const size = Math.round((base64Length * 3) / 4);
+    
+    return { dataUrl, size };
+}
+
+// Download Single
+function downloadSingle(index) {
+    const file = files[index];
+    if (!file.converted) return;
+    
+    const extension = selectedFormat.split('/')[1];
+    const link = document.createElement('a');
+    link.download = `${file.name}.${extension}`;
+    link.href = file.converted;
+    link.click();
+}
+
+// Download All
+function downloadAll() {
+    files.forEach((file, index) => {
+        if (file.converted) {
+            setTimeout(() => downloadSingle(index), index * 100);
+        }
+    });
+}
+
+// Remove File
+function removeFile(index) {
+    files.splice(index, 1);
+    renderFiles();
+    if (files.length === 0) {
+        settingsSection.classList.add('hidden');
+        actionButtons.classList.add('hidden');
+    }
+}
+
+// Clear All
+function clearAll() {
+    files = [];
+    renderFiles();
+    settingsSection.classList.add('hidden');
+    actionButtons.classList.add('hidden');
+    fileInput.value = '';
+}
+
+// Format File Size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// History
+function saveToHistory(file) {
+    const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+    history.unshift({
+        name: file.name,
+        format: selectedFormat.split('/')[1].toUpperCase(),
+        originalSize: file.originalSize,
+        convertedSize: file.convertedSize,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('conversionHistory', JSON.stringify(history.slice(0, 10)));
+    loadHistory();
+}
+
+function loadHistory() {
+    const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+    if (history.length === 0) {
+        historySection.classList.add('hidden');
+        return;
+    }
+    
+    historySection.classList.remove('hidden');
+    historyList.innerHTML = history.map(item => `
+        <div class="history-item">
+            <span>${item.name} → ${item.format}</span>
+            <span>${((1 - item.convertedSize / item.originalSize) * 100).toFixed(1)}% ${translations[currentLang].saved}</span>
+        </div>
+    `).join('');
+}
+
+function clearHistory() {
+    localStorage.removeItem('conversionHistory');
+    historySection.classList.add('hidden');
+}
+
+// Start
+init();
 </script>
 
 </body>
