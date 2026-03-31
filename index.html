@@ -1,1457 +1,1529 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Online Image Converter - PNG, JPG, WebP | Fast & Secure</title>
-    <meta name="description" content="Free online image converter supporting PNG, JPG, JPEG, WebP, GIF, BMP. Batch conversion, resize images, compare file sizes. 100% privacy - works offline. No upload needed.">
-    <meta name="keywords" content="image converter, convert images online, PNG to JPG, JPG to PNG, WebP converter, batch image converter, resize images, конвертер изображений, convertidor de imágenes, convertisseur d'images, 图像转换器, Bildkonverter, コンバーター">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://erste1.github.io/image-converter/">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Free Online Image Converter - Fast & Secure">
-    <meta property="og:description" content="Convert images between PNG, JPG, WebP formats. Batch processing, resize, and compare file sizes.">
-    <meta property="og:type" content="website">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-card: #ffffff;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --border-color: #dee2e6;
-            --accent-color: #0066cc;
-            --accent-hover: #0052a3;
-            --success-color: #28a745;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #242424;
-            --bg-card: #2d2d2d;
-            --text-primary: #e9ecef;
-            --text-secondary: #adb5bd;
-            --border-color: #404040;
-            --accent-color: #4d9fff;
-            --accent-hover: #3385ff;
-            --shadow: 0 2px 8px rgba(0,0,0,0.3);
-            --shadow-lg: 0 4px 16px rgba(0,0,0,0.4);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .header {
-            background: var(--bg-primary);
-            box-shadow: var(--shadow);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .lang-selector, .theme-toggle {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .lang-selector:hover, .theme-toggle:hover {
-            border-color: var(--accent-color);
-        }
-
-        .theme-toggle {
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .main-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem;
-        }
-
-        .drop-zone {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 3rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: var(--bg-secondary);
-        }
-
-        .drop-zone:hover, .drop-zone.dragover {
-            border-color: var(--accent-color);
-            background: var(--bg-primary);
-        }
-
-        .drop-zone-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .drop-zone-text {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .drop-zone-subtext {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-
-        .format-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .format-option {
-            padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-            background: var(--bg-secondary);
-        }
-
-        .format-option:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .format-option.selected {
-            border-color: var(--accent-color);
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .format-option-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .format-option-desc {
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-
-        .options-section {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-        }
-
-        .option-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .option-label {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .slider-container {
-            flex: 1;
-            min-width: 200px;
-            max-width: 300px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--border-color);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-            border: none;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .files-list {
-            margin-top: 2rem;
-        }
-
-        .file-item {
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .file-preview {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .file-info {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .file-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            word-break: break-all;
-        }
-
-        .file-size {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .size-comparison {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .size-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .size-original {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .size-converted {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .size-savings {
-            color: var(--success-color);
-            font-weight: 600;
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-color);
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .history-section {
-            margin-top: 3rem;
-        }
-
-        .history-item {
-            background: var(--bg-card);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
-        .footer {
-            background: var(--bg-card);
-            padding: 2rem 0;
-            margin-top: 4rem;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .header-content {
-                justify-content: center;
-            }
-
-            .main-card {
-                padding: 1.5rem;
-            }
-
-            .drop-zone {
-                padding: 2rem 1rem;
-            }
-
-            .format-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .file-item {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .format-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Converter — PNG, JPG, ICO, WebP, GIF, BMP | Free & Private</title>
+  <meta name="description" content="Free online image converter: PNG, JPG, ICO, WebP, GIF, BMP, AVIF. Batch convert, resize, apply filters, rotate, add watermarks. 100% private — works in your browser, no upload needed.">
+  <meta name="keywords" content="image converter, ico converter, png to ico, jpg to ico, favicon maker, convert png to jpg, webp converter, batch image convert, free online converter, resize image, image filter">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/">
+  <meta property="og:title" content="Free Image Converter — PNG, JPG, ICO, WebP & More">
+  <meta property="og:description" content="Convert images between 8 formats including ICO. Add filters, resize, watermarks. 100% private — all processing in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://yourdomain.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Image Converter — PNG, JPG, ICO, WebP & More">
+  <meta name="twitter:description" content="Convert images between 8 formats. Filters, resize, watermark. 100% private.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23ff6b2b'/%3E%3Crect x='10' y='16' width='44' height='32' rx='4' fill='%230c0c0e'/%3E%3Ccircle cx='22' cy='28' r='5' fill='%23ffd166'/%3E%3Cpolygon points='10,48 28,30 40,42 50,32 54,48' fill='%23ff6b2b'/%3E%3C/svg%3E">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image Converter",
+    "description": "Free online image converter supporting PNG, JPG, ICO, WebP, GIF, BMP, AVIF formats.",
+    "url": "https://yourdomain.com/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --bg:        #0c0c0e;
+      --surf:      #141418;
+      --surf2:     #1c1c24;
+      --surf3:     #23232e;
+      --border:    #2e2e3d;
+      --border2:   #3d3d52;
+      --acc:       #ff6b2b;
+      --acc2:      #ffd166;
+      --acc3:      #2bffc8;
+      --text:      #f0f0f5;
+      --text2:     #9090b0;
+      --text3:     #5a5a78;
+      --success:   #2bffc8;
+      --danger:    #ff4466;
+      --r:         12px;
+      --r2:        8px;
+      --shadow:    0 4px 20px rgba(0,0,0,.5);
+      --shadow2:   0 8px 40px rgba(0,0,0,.7);
+      --font:      'Syne', system-ui, sans-serif;
+      --mono:      'DM Mono', monospace;
+    }
+    [data-theme="light"] {
+      --bg:      #f0ede8;
+      --surf:    #ffffff;
+      --surf2:   #f5f2ee;
+      --surf3:   #ece8e2;
+      --border:  #ddd8d0;
+      --border2: #c8c0b8;
+      --text:    #1a1a22;
+      --text2:   #5a5a6a;
+      --text3:   #9090a0;
+      --shadow:  0 4px 20px rgba(0,0,0,.08);
+      --shadow2: 0 8px 40px rgba(0,0,0,.15);
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.6; min-height:100vh; overflow-x:hidden; }
+
+    .header { position:sticky; top:0; z-index:200; background:rgba(12,12,14,.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:.75rem 0; }
+    [data-theme="light"] .header { background:rgba(255,255,255,.85); }
+    .header-inner { max-width:1280px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .logo { display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--text); font-weight:800; font-size:1.25rem; letter-spacing:-.02em; }
+    .logo-icon { width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,var(--acc),var(--acc2)); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+    .logo-dot { color:var(--acc); }
+    .header-controls { display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; }
+    .lang-sel { background:var(--surf2); border:1px solid var(--border); color:var(--text); border-radius:var(--r2); padding:.4rem .8rem; font-size:.85rem; font-family:var(--font); cursor:pointer; transition:.2s; }
+    .lang-sel:hover { border-color:var(--acc); }
+    .icon-btn { width:38px; height:38px; border:1px solid var(--border); border-radius:var(--r2); background:var(--surf2); color:var(--text); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.2s; }
+    .icon-btn:hover { border-color:var(--acc); transform:translateY(-1px); }
+
+    .hero { max-width:1280px; margin:0 auto; padding:3.5rem 1.5rem 1.5rem; display:grid; grid-template-columns:1fr auto; align-items:end; gap:2rem; }
+    @media(max-width:700px){ .hero{ grid-template-columns:1fr; } }
+    .hero h1 { font-size:clamp(2rem,5vw,3.5rem); font-weight:800; letter-spacing:-.04em; line-height:1.1; }
+    .hero h1 span { color:var(--acc); }
+    .hero p { margin-top:.75rem; color:var(--text2); max-width:560px; font-size:1.05rem; }
+    .badges { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1.2rem; }
+    .badge { padding:.3rem .75rem; border-radius:99px; font-size:.78rem; font-weight:600; border:1px solid var(--border); color:var(--text2); background:var(--surf); font-family:var(--mono); }
+    .badge.hot { border-color:var(--acc); color:var(--acc); background:rgba(255,107,43,.08); }
+    .badge.new { border-color:var(--acc3); color:var(--acc3); background:rgba(43,255,200,.08); }
+
+    .container { max-width:1280px; margin:0 auto; padding:0 1.5rem 4rem; }
+
+    .card { background:var(--surf); border:1px solid var(--border); border-radius:var(--r); padding:2rem; margin-bottom:1.5rem; box-shadow:var(--shadow); }
+    .card-title { font-size:1rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--acc); margin-bottom:1.25rem; font-family:var(--mono); display:flex; align-items:center; gap:.5rem; }
+    .card-title::before { content:''; display:block; width:3px; height:16px; background:var(--acc); border-radius:2px; }
+
+    .drop-zone { border:2px dashed var(--border2); border-radius:var(--r); padding:3.5rem 2rem; text-align:center; cursor:pointer; transition:.3s; background:var(--surf2); position:relative; }
+    .drop-zone::before { content:''; position:absolute; inset:0; border-radius:var(--r); background:linear-gradient(135deg,rgba(255,107,43,.04),rgba(255,209,102,.04)); pointer-events:none; }
+    .drop-zone:hover,.drop-zone.dragover { border-color:var(--acc); background:var(--surf3); }
+    .drop-zone:hover::before,.drop-zone.dragover::before { background:linear-gradient(135deg,rgba(255,107,43,.1),rgba(255,209,102,.05)); }
+    .dz-icon { font-size:3rem; margin-bottom:1rem; line-height:1; }
+    .dz-title { font-size:1.15rem; font-weight:700; margin-bottom:.4rem; }
+    .dz-sub { font-size:.88rem; color:var(--text2); }
+    .dz-formats { display:flex; justify-content:center; gap:.4rem; flex-wrap:wrap; margin-top:1rem; }
+    .dz-fmt-tag { background:var(--surf); border:1px solid var(--border); border-radius:4px; padding:.15rem .5rem; font-size:.72rem; font-family:var(--mono); color:var(--text2); }
+
+    .format-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:.75rem; margin-bottom:1rem; }
+    .fmt-btn { padding:.9rem .5rem; border:2px solid var(--border); border-radius:var(--r2); cursor:pointer; text-align:center; transition:.2s; background:var(--surf2); position:relative; overflow:hidden; }
+    .fmt-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent,rgba(255,107,43,.12)); opacity:0; transition:.2s; }
+    .fmt-btn:hover { border-color:var(--border2); transform:translateY(-2px); }
+    .fmt-btn:hover::after { opacity:1; }
+    .fmt-btn.active { border-color:var(--acc); background:var(--surf3); }
+    .fmt-btn.active::after { opacity:1; }
+    .fmt-name { font-weight:800; font-size:1.1rem; letter-spacing:.02em; }
+    .fmt-desc { font-size:.7rem; color:var(--text2); margin-top:.2rem; line-height:1.3; }
+    .fmt-badge-new { position:absolute; top:4px; right:4px; background:var(--acc3); color:#000; font-size:.55rem; font-weight:700; padding:.1rem .3rem; border-radius:3px; font-family:var(--mono); }
+
+    .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:700px){ .options-grid{ grid-template-columns:1fr; } }
+    .opt-box { background:var(--surf2); border:1px solid var(--border); border-radius:var(--r2); padding:1rem 1.25rem; }
+    .opt-label { font-size:.8rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); margin-bottom:.6rem; font-family:var(--mono); }
+    .opt-row { display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; }
+    .opt-val { font-family:var(--mono); font-size:.9rem; color:var(--acc); min-width:50px; }
+    input[type=range] { flex:1; min-width:120px; height:4px; border-radius:2px; -webkit-appearance:none; background:var(--border2); outline:none; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--acc); cursor:pointer; border:2px solid var(--surf); }
+    input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--acc); border:2px solid var(--surf); cursor:pointer; }
+    .toggle-row { display:flex; align-items:center; gap:.75rem; }
+    .toggle-label { font-size:.9rem; color:var(--text2); flex:1; }
+    .toggle { position:relative; width:40px; height:22px; cursor:pointer; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-track { position:absolute; inset:0; border-radius:11px; background:var(--border2); transition:.2s; }
+    .toggle input:checked ~ .toggle-track { background:var(--acc); }
+    .toggle-thumb { position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:.2s; }
+    .toggle input:checked ~ .toggle-thumb { left:21px; }
+    input[type=text],input[type=number],input[type=color] { background:var(--surf); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:.4rem .75rem; font-size:.9rem; font-family:var(--mono); width:100%; transition:.2s; }
+    input[type=text]:focus,input[type=number]:focus { outline:none; border-color:var(--acc); }
+    input[type=color] { width:40px; height:36px; padding:2px; cursor:pointer; }
+    select.opt-select { background:var(--surf); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:.4rem .75rem; font-size:.85rem; font-family:var(--font); cursor:pointer; transition:.2s; }
+    select.opt-select:focus { outline:none; border-color:var(--acc); }
+
+    .filter-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.75rem; }
+    .filter-item { display:flex; flex-direction:column; gap:.4rem; }
+    .filter-item .opt-label { margin-bottom:0; }
+    .filter-row { display:flex; align-items:center; gap:.5rem; }
+    .filter-val { font-family:var(--mono); font-size:.8rem; color:var(--acc2); width:40px; text-align:right; }
+
+    .file-item { background:var(--surf2); border:1px solid var(--border); border-radius:var(--r2); padding:1rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:.2s; cursor:grab; position:relative; }
+    .file-item:hover { border-color:var(--border2); }
+    .file-item.dragging { opacity:.4; }
+    .file-item+.file-item { margin-top:.6rem; }
+    .file-thumb { width:72px; height:72px; object-fit:cover; border-radius:6px; border:1px solid var(--border); flex-shrink:0; }
+    .file-info { flex:1; min-width:160px; }
+    .file-name { font-weight:700; font-size:.95rem; word-break:break-all; margin-bottom:.25rem; }
+    .file-meta { font-size:.8rem; color:var(--text2); font-family:var(--mono); }
+    .size-row { display:flex; align-items:center; gap:.6rem; margin-top:.4rem; flex-wrap:wrap; }
+    .sz { padding:.2rem .55rem; border-radius:4px; font-size:.75rem; font-family:var(--mono); font-weight:600; }
+    .sz-orig { background:var(--surf3); color:var(--text2); }
+    .sz-conv { background:rgba(43,255,200,.12); color:var(--acc3); border:1px solid rgba(43,255,200,.25); }
+    .sz-save { color:var(--acc2); font-size:.8rem; font-family:var(--mono); }
+    .file-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .file-status { position:absolute; top:.5rem; right:.5rem; font-size:.7rem; font-family:var(--mono); padding:.15rem .45rem; border-radius:3px; font-weight:600; }
+    .status-ready { background:rgba(43,255,200,.12); color:var(--acc3); border:1px solid rgba(43,255,200,.2); }
+    .status-waiting { background:rgba(255,107,43,.1); color:var(--acc); border:1px solid rgba(255,107,43,.2); }
+
+    .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.55rem 1.1rem; border-radius:var(--r2); border:none; font-family:var(--font); font-size:.88rem; font-weight:700; cursor:pointer; transition:.18s; white-space:nowrap; text-decoration:none; }
+    .btn:hover { transform:translateY(-1px); }
+    .btn:active { transform:translateY(0); }
+    .btn-primary { background:var(--acc); color:#fff; }
+    .btn-primary:hover { background:#e85e22; }
+    .btn-gold { background:var(--acc2); color:#000; }
+    .btn-gold:hover { background:#f0c248; }
+    .btn-teal { background:var(--acc3); color:#000; }
+    .btn-teal:hover { background:#22eebc; }
+    .btn-ghost { background:var(--surf2); color:var(--text); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:var(--acc); color:var(--acc); }
+    .btn-danger { background:var(--danger); color:#fff; }
+    .btn-sm { padding:.35rem .75rem; font-size:.8rem; }
+    .btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+    .action-strip { display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; padding:1.5rem 0 .5rem; }
+
+    .tabs { display:flex; gap:.25rem; border-bottom:1px solid var(--border); margin-bottom:1.25rem; }
+    .tab { padding:.5rem 1rem; font-size:.85rem; font-weight:700; cursor:pointer; border-bottom:2px solid transparent; color:var(--text2); transition:.2s; margin-bottom:-1px; }
+    .tab:hover { color:var(--text); }
+    .tab.active { color:var(--acc); border-bottom-color:var(--acc); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    .compare-wrap { position:relative; overflow:hidden; border-radius:var(--r2); cursor:ew-resize; max-height:400px; user-select:none; border:1px solid var(--border); }
+    .compare-img { width:100%; display:block; max-height:400px; object-fit:contain; }
+    .compare-after { position:absolute; inset:0; overflow:hidden; }
+    .compare-after img { width:100%; display:block; max-height:400px; object-fit:contain; }
+    .compare-handle { position:absolute; top:0; bottom:0; width:2px; background:var(--acc); cursor:ew-resize; z-index:10; }
+    .compare-handle::before { content:'◀▶'; position:absolute; left:50%; transform:translateX(-50%); width:28px; height:28px; background:var(--acc); border-radius:50%; border:2px solid #fff; top:calc(50% - 14px); display:flex; align-items:center; justify-content:center; font-size:.6rem; color:#fff; line-height:28px; text-align:center; }
+    .compare-labels { display:flex; justify-content:space-between; margin-top:.5rem; font-size:.75rem; font-family:var(--mono); color:var(--text2); }
+
+    .feature-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+    .feat { background:var(--surf); border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; }
+    .feat-icon { font-size:1.75rem; margin-bottom:.75rem; }
+    .feat-title { font-weight:700; font-size:1rem; margin-bottom:.35rem; }
+    .feat-desc { font-size:.88rem; color:var(--text2); line-height:1.55; }
+
+    /* ── FAQ ── */
+    .faq-list { display:grid; gap:.75rem; }
+    .faq-item { border:1px solid var(--border); border-radius:var(--r2); overflow:hidden; }
+    .faq-q { padding:1rem 1.25rem; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:1rem; background:var(--surf); transition:.2s; }
+    .faq-q:hover { background:var(--surf2); }
+    .faq-arrow { transition:.2s; color:var(--acc); font-size:.9rem; flex-shrink:0; }
+    .faq-a { background:var(--surf2); padding:0 1.25rem; max-height:0; overflow:hidden; transition:.35s; font-size:.92rem; color:var(--text2); line-height:1.65; }
+    .faq-a.open { max-height:300px; padding:1rem 1.25rem; }
+    .faq-item.open .faq-arrow { transform:rotate(180deg); }
+
+    .hist-item { background:var(--surf2); border:1px solid var(--border); border-radius:var(--r2); padding:.75rem 1rem; display:flex; justify-content:space-between; align-items:center; gap:.75rem; flex-wrap:wrap; font-size:.85rem; }
+    .hist-item+.hist-item { margin-top:.4rem; }
+    .hist-name { font-family:var(--mono); font-weight:500; }
+    .hist-meta { color:var(--text2); font-family:var(--mono); font-size:.78rem; }
+    .hist-save { color:var(--acc3); font-family:var(--mono); font-size:.78rem; font-weight:600; }
+
+    .progress-bar-wrap { background:var(--surf3); border-radius:4px; height:6px; overflow:hidden; margin-top:.5rem; }
+    .progress-bar { height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); border-radius:4px; transition:width .3s; }
+
+    .footer { background:var(--surf); border-top:1px solid var(--border); padding:2.5rem 0; margin-top:4rem; text-align:center; color:var(--text2); font-size:.88rem; }
+    .footer-links { display:flex; justify-content:center; gap:1.5rem; margin-bottom:.75rem; flex-wrap:wrap; }
+    .footer-links a { color:var(--text2); text-decoration:none; transition:.2s; }
+    .footer-links a:hover { color:var(--acc); }
+
+    .hidden { display:none !important; }
+    .section-gap { margin-top:2.5rem; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:600px){ .grid-2{ grid-template-columns:1fr; } }
+
+    .toast-wrap { position:fixed; bottom:1.5rem; right:1.5rem; z-index:999; display:flex; flex-direction:column; gap:.5rem; }
+    .toast { background:var(--surf3); border:1px solid var(--border2); border-radius:var(--r2); padding:.75rem 1.25rem; font-size:.88rem; box-shadow:var(--shadow2); display:flex; align-items:center; gap:.5rem; animation:slideIn .25s ease; }
+    @keyframes slideIn { from{ opacity:0; transform:translateX(20px); } to{ opacity:1; transform:none; } }
+
+    .hero-line { width:60px; height:4px; background:linear-gradient(90deg,var(--acc),var(--acc2)); border-radius:2px; margin:.5rem 0 1.25rem; }
+
+    @media(max-width:768px){ .card{ padding:1.25rem; } .file-item{ flex-direction:column; text-align:center; } .file-actions{ justify-content:center; } }
+    @media(max-width:480px){ .format-grid{ grid-template-columns:repeat(3,1fr); } }
+
+    @keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(43,255,200,.3); } 50%{ box-shadow:0 0 0 6px rgba(43,255,200,0); } }
+    .fmt-btn.active[data-format="ico"] { animation:pulse 2s infinite; }
+  </style>
 </head>
 <body>
 
 <header class="header">
-    <div class="header-content">
-        <a href="/" class="logo">
-            <span>🖼️</span>
-            <span data-i18n="title">Image Converter</span>
-        </a>
-        <div class="controls">
-            <select class="lang-selector" id="langSelector">
-                <option value="en">English</option>
-                <option value="ru">Русский</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="zh">中文</option>
-                <option value="ja">日本語</option>
-                <option value="pt">Português</option>
-                <option value="it">Italiano</option>
-                <option value="ar">العربية</option>
-                <option value="hi">हिन्दी</option>
-            </select>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <span class="theme-icon">🌙</span>
-            </button>
-        </div>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">🖼️</div>
+      <span>Image<span class="logo-dot">.</span>Convert</span>
+    </a>
+    <div class="header-controls">
+      <select class="lang-sel" id="langSel">
+        <option value="en">🇬🇧 EN</option>
+        <option value="ru">🇷🇺 RU</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="es">🇪🇸 ES</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="zh">🇨🇳 ZH</option>
+        <option value="ja">🇯🇵 JA</option>
+        <option value="pt">🇵🇹 PT</option>
+        <option value="ar">🇸🇦 AR</option>
+      </select>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme">☀️</button>
     </div>
+  </div>
 </header>
 
-<div class="container">
-    <div class="hero">
-        <h1 data-i18n="heroTitle">Free Online Image Converter</h1>
-        <p data-i18n="heroDesc">Convert images to PNG, JPG, WebP and more. Fast, secure, and completely private - all processing happens in your browser.</p>
+<div class="hero">
+  <div>
+    <h1 data-i18n="heroTitle">Free <span>Image Converter</span><br>PNG · JPG · <span>ICO</span> · WebP</h1>
+    <div class="hero-line"></div>
+    <p data-i18n="heroDesc">Batch convert, resize, filter and watermark images. All processing happens in your browser — your files never leave your device.</p>
+    <div class="badges">
+      <span class="badge hot">🎯 ICO Multi-size</span>
+      <span class="badge new">✨ Filters & Effects</span>
+      <span class="badge">🔒 100% Private</span>
+      <span class="badge">📦 ZIP Download</span>
+      <span class="badge">⚡ Offline Ready</span>
     </div>
-
-    <div class="main-card">
-        <div class="drop-zone" id="dropZone">
-            <div class="drop-zone-icon">📁</div>
-            <div class="drop-zone-text" data-i18n="dropZoneText">Drop images here or click to upload</div>
-            <div class="drop-zone-subtext" data-i18n="dropZoneSubtext">Supports: PNG, JPG, JPEG, WebP, GIF, BMP | Multiple files allowed</div>
-        </div>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
-
-        <div id="settingsSection" class="hidden">
-            <h3 data-i18n="selectFormat" style="margin: 1.5rem 0 1rem;">Select Output Format</h3>
-            <div class="format-grid">
-                <div class="format-option" data-format="image/png">
-                    <div class="format-option-name">PNG</div>
-                    <div class="format-option-desc" data-i18n="formatPngDesc">Lossless, transparency</div>
-                </div>
-                <div class="format-option selected" data-format="image/jpeg">
-                    <div class="format-option-name">JPEG</div>
-                    <div class="format-option-desc" data-i18n="formatJpegDesc">Smaller size</div>
-                </div>
-                <div class="format-option" data-format="image/webp">
-                    <div class="format-option-name">WebP</div>
-                    <div class="format-option-desc" data-i18n="formatWebpDesc">Modern, efficient</div>
-                </div>
-                <div class="format-option" data-format="image/bmp">
-                    <div class="format-option-name">BMP</div>
-                    <div class="format-option-desc" data-i18n="formatBmpDesc">Uncompressed</div>
-                </div>
-            </div>
-
-            <div class="options-section">
-                <div class="option-row">
-                    <label class="option-label" data-i18n="quality">Quality:</label>
-                    <div class="slider-container">
-                        <input type="range" id="qualitySlider" min="10" max="100" value="90">
-                        <span id="qualityValue">90%</span>
-                    </div>
-                </div>
-
-                <div class="option-row">
-                    <label class="option-label" data-i18n="resize">Resize Images:</label>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="resizeCheckbox">
-                    </div>
-                </div>
-
-                <div class="option-row hidden" id="resizeOptions">
-                    <label class="option-label" data-i18n="width">Width:</label>
-                    <div class="slider-container">
-                        <input type="range" id="widthSlider" min="100" max="4000" value="1920" step="100">
-                        <span id="widthValue">1920px</span>
-                    </div>
-                </div>
-
-                <div class="option-row">
-                    <label class="option-label" data-i18n="maintainAspect">Maintain Aspect Ratio:</label>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="aspectRatioCheckbox" checked>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="filesList" class="files-list hidden"></div>
-
-        <div class="action-buttons hidden" id="actionButtons">
-            <button class="btn btn-primary btn-lg" id="convertBtn">
-                <span>⚡</span>
-                <span data-i18n="convertAll">Convert All</span>
-            </button>
-            <button class="btn btn-success btn-lg" id="downloadAllBtn">
-                <span>📥</span>
-                <span data-i18n="downloadAll">Download All</span>
-            </button>
-            <button class="btn btn-secondary" id="clearBtn">
-                <span>🗑️</span>
-                <span data-i18n="clear">Clear</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="features">
-        <div class="feature-card">
-            <div class="feature-icon">🔒</div>
-            <h3 class="feature-title" data-i18n="featurePrivacyTitle">100% Privacy</h3>
-            <p class="feature-desc" data-i18n="featurePrivacyDesc">All processing happens in your browser. Your images never leave your device.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3 class="feature-title" data-i18n="featureSpeedTitle">Lightning Fast</h3>
-            <p class="feature-desc" data-i18n="featureSpeedDesc">Instant conversion with no waiting. Convert multiple images at once.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3 class="feature-title" data-i18n="featureCompareTitle">Size Comparison</h3>
-            <p class="feature-desc" data-i18n="featureCompareDesc">See exactly how much space you save with each conversion.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">📐</div>
-            <h3 class="feature-title" data-i18n="featureResizeTitle">Resize & Optimize</h3>
-            <p class="feature-desc" data-i18n="featureResizeDesc">Change dimensions and optimize quality before converting.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">📱</div>
-            <h3 class="feature-title" data-i18n="featureMobileTitle">Mobile Friendly</h3>
-            <p class="feature-desc" data-i18n="featureMobileDesc">Works perfectly on all devices - desktop, tablet, and mobile.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🌐</div>
-            <h3 class="feature-title" data-i18n="featureOfflineTitle">Works Offline</h3>
-            <p class="feature-desc" data-i18n="featureOfflineDesc">No internet required after loading. Convert anywhere, anytime.</p>
-        </div>
-    </div>
-
-    <div class="history-section hidden" id="historySection">
-        <h3 data-i18n="conversionHistory">Conversion History</h3>
-        <div id="historyList"></div>
-        <button class="btn btn-secondary" id="clearHistoryBtn" data-i18n="clearHistory">Clear History</button>
-    </div>
+  </div>
 </div>
 
+<div class="container">
+
+  <div class="card">
+    <div class="card-title" data-i18n="secUpload">Upload Images</div>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📂</div>
+      <div class="dz-title" data-i18n="dropTitle">Drop images here or click to browse</div>
+      <div class="dz-sub" data-i18n="dropSub">Multiple files supported</div>
+      <div class="dz-formats">
+        <span class="dz-fmt-tag">PNG</span><span class="dz-fmt-tag">JPG</span>
+        <span class="dz-fmt-tag">WebP</span><span class="dz-fmt-tag">GIF</span>
+        <span class="dz-fmt-tag">BMP</span><span class="dz-fmt-tag">ICO</span>
+        <span class="dz-fmt-tag">SVG</span><span class="dz-fmt-tag">TIFF</span>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+  </div>
+
+  <div class="card hidden" id="settingsCard">
+    <div class="tabs">
+      <div class="tab active" data-tab="format">🎨 Format</div>
+      <div class="tab" data-tab="adjustments">🛠 Adjustments</div>
+      <div class="tab" data-tab="filters">✨ Filters</div>
+      <div class="tab" data-tab="watermark">💧 Watermark</div>
+    </div>
+
+    <div class="tab-panel active" id="tab-format">
+      <div class="card-title" data-i18n="secFormat">Output Format</div>
+      <div class="format-grid">
+        <div class="fmt-btn" data-format="png"><div class="fmt-name">PNG</div><div class="fmt-desc">Lossless + alpha</div></div>
+        <div class="fmt-btn active" data-format="jpeg"><div class="fmt-name">JPEG</div><div class="fmt-desc">Small size</div></div>
+        <div class="fmt-btn" data-format="webp"><div class="fmt-name">WebP</div><div class="fmt-desc">Modern format</div></div>
+        <div class="fmt-btn" data-format="ico"><div class="fmt-badge-new">NEW</div><div class="fmt-name">ICO</div><div class="fmt-desc">Favicon ready</div></div>
+        <div class="fmt-btn" data-format="gif"><div class="fmt-name">GIF</div><div class="fmt-desc">Animated</div></div>
+        <div class="fmt-btn" data-format="bmp"><div class="fmt-name">BMP</div><div class="fmt-desc">Uncompressed</div></div>
+        <div class="fmt-btn" data-format="avif"><div class="fmt-badge-new">NEW</div><div class="fmt-name">AVIF</div><div class="fmt-desc">Next-gen</div></div>
+        <div class="fmt-btn" data-format="tiff"><div class="fmt-name">TIFF</div><div class="fmt-desc">Print quality</div></div>
+      </div>
+      <div id="icoOptions" class="opt-box hidden" style="margin-top:1rem">
+        <div class="opt-label" data-i18n="icoSizes">ICO sizes to generate</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem;">
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico16" checked> 16×16</label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico32" checked> 32×32</label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico48" checked> 48×48</label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico64" checked> 64×64</label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico128"> 128×128</label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="ico256"> 256×256</label>
+        </div>
+        <p style="margin-top:.6rem;font-size:.78rem;color:var(--text2)" data-i18n="icoNote">💡 Each ICO file will contain all selected sizes — perfect for Windows icons and favicons.</p>
+      </div>
+      <div class="opt-box" style="margin-top:1rem" id="qualityBox">
+        <div class="opt-label" data-i18n="qualLabel">Quality</div>
+        <div class="opt-row">
+          <input type="range" id="qualSlider" min="10" max="100" value="90">
+          <span class="opt-val" id="qualVal">90%</span>
+        </div>
+      </div>
+      <div class="opt-box" style="margin-top:.75rem">
+        <div class="opt-label" data-i18n="bgLabel">Background Color (for transparency)</div>
+        <div class="opt-row">
+          <input type="color" id="bgColor" value="#ffffff">
+          <label class="toggle"><input type="checkbox" id="bgTransparent" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+          <span class="toggle-label" data-i18n="keepTransp" style="font-size:.85rem">Keep transparency</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-adjustments">
+      <div class="options-grid">
+        <div class="opt-box">
+          <div class="opt-label" data-i18n="resizeLabel">Resize</div>
+          <label class="toggle-row" style="margin-bottom:.75rem">
+            <label class="toggle"><input type="checkbox" id="resizeToggle"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            <span class="toggle-label" data-i18n="enableResize">Enable resize</span>
+          </label>
+          <div id="resizeFields">
+            <div class="opt-row" style="margin-bottom:.5rem">
+              <span style="font-size:.8rem;color:var(--text2);width:50px">Width</span>
+              <input type="number" id="resW" value="1920" min="1" max="8000" style="flex:1">
+              <span style="font-size:.75rem;color:var(--text2)">px</span>
+            </div>
+            <div class="opt-row">
+              <span style="font-size:.8rem;color:var(--text2);width:50px">Height</span>
+              <input type="number" id="resH" value="1080" min="1" max="8000" style="flex:1">
+              <span style="font-size:.75rem;color:var(--text2)">px</span>
+            </div>
+            <label class="toggle-row" style="margin-top:.75rem">
+              <label class="toggle"><input type="checkbox" id="aspectLock" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              <span class="toggle-label" data-i18n="lockAspect" style="font-size:.82rem">Lock aspect ratio</span>
+            </label>
+          </div>
+        </div>
+        <div class="opt-box">
+          <div class="opt-label" data-i18n="rotateLabel">Rotate & Flip</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+            <button class="btn btn-ghost btn-sm" onclick="setRotate(0)">0°</button>
+            <button class="btn btn-ghost btn-sm" onclick="setRotate(90)">90°</button>
+            <button class="btn btn-ghost btn-sm" onclick="setRotate(180)">180°</button>
+            <button class="btn btn-ghost btn-sm" onclick="setRotate(270)">270°</button>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-ghost btn-sm" onclick="toggleFlip('h')">↔ Flip H</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleFlip('v')">↕ Flip V</button>
+          </div>
+          <div style="margin-top:.75rem;font-family:var(--mono);font-size:.8rem;color:var(--acc)">
+            Rotation: <span id="rotateDisplay">0°</span> | Flip: <span id="flipDisplay">none</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-filters">
+      <div class="filter-grid">
+        <div class="filter-item"><div class="opt-label">Brightness</div><div class="filter-row"><input type="range" id="fBrightness" min="0" max="200" value="100"><span class="filter-val" id="fBrVal">100%</span></div></div>
+        <div class="filter-item"><div class="opt-label">Contrast</div><div class="filter-row"><input type="range" id="fContrast" min="0" max="200" value="100"><span class="filter-val" id="fCoVal">100%</span></div></div>
+        <div class="filter-item"><div class="opt-label">Saturation</div><div class="filter-row"><input type="range" id="fSaturate" min="0" max="200" value="100"><span class="filter-val" id="fSaVal">100%</span></div></div>
+        <div class="filter-item"><div class="opt-label">Hue Rotate</div><div class="filter-row"><input type="range" id="fHue" min="0" max="360" value="0"><span class="filter-val" id="fHuVal">0°</span></div></div>
+        <div class="filter-item"><div class="opt-label">Blur</div><div class="filter-row"><input type="range" id="fBlur" min="0" max="20" value="0" step=".5"><span class="filter-val" id="fBlVal">0px</span></div></div>
+        <div class="filter-item"><div class="opt-label">Sepia</div><div class="filter-row"><input type="range" id="fSepia" min="0" max="100" value="0"><span class="filter-val" id="fSeVal">0%</span></div></div>
+        <div class="filter-item"><div class="opt-label">Grayscale</div><div class="filter-row"><input type="range" id="fGray" min="0" max="100" value="0"><span class="filter-val" id="fGrVal">0%</span></div></div>
+        <div class="filter-item"><div class="opt-label">Invert</div><div class="filter-row"><input type="range" id="fInvert" min="0" max="100" value="0"><span class="filter-val" id="fInVal">0%</span></div></div>
+      </div>
+      <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+        <span data-i18n="presetsLabel" style="font-size:.85rem;color:var(--text2)">Quick presets:</span>
+        <button class="btn btn-ghost btn-sm" onclick="applyPreset('vintage')">🎞 Vintage</button>
+        <button class="btn btn-ghost btn-sm" onclick="applyPreset('vivid')">🌈 Vivid</button>
+        <button class="btn btn-ghost btn-sm" onclick="applyPreset('noir')">🎭 Noir</button>
+        <button class="btn btn-ghost btn-sm" onclick="applyPreset('reset')">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-watermark">
+      <div class="options-grid">
+        <div class="opt-box">
+          <div class="opt-label" data-i18n="wmLabel">Watermark Text</div>
+          <div class="toggle-row" style="margin-bottom:.75rem">
+            <label class="toggle"><input type="checkbox" id="wmToggle"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            <span class="toggle-label" data-i18n="enableWm">Enable watermark</span>
+          </div>
+          <input type="text" id="wmText" data-i18n-ph="wmPlaceholder" placeholder="© Your Name 2025" style="margin-bottom:.6rem">
+          <div class="opt-label" data-i18n="wmFontSize" style="margin-top:.5rem">Font Size</div>
+          <div class="opt-row">
+            <input type="range" id="wmSize" min="10" max="80" value="24">
+            <span class="opt-val" id="wmSizeVal">24px</span>
+          </div>
+        </div>
+        <div class="opt-box">
+          <div class="opt-label" data-i18n="wmStyle">Watermark Style</div>
+          <div style="margin-bottom:.6rem">
+            <div class="opt-label" style="margin-bottom:.3rem">Color</div>
+            <div class="opt-row">
+              <input type="color" id="wmColor" value="#ffffff">
+              <div class="opt-label">Opacity</div>
+              <input type="range" id="wmOpacity" min="10" max="100" value="70" style="flex:1">
+              <span class="opt-val" id="wmOpVal">70%</span>
+            </div>
+          </div>
+          <div class="opt-label">Position</div>
+          <select class="opt-select" id="wmPos" style="width:100%">
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="top-right">Top Right</option>
+            <option value="top-left">Top Left</option>
+            <option value="center">Center</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="filesList" class="hidden"></div>
+
+  <div id="actionBtns" class="action-strip hidden">
+    <button class="btn btn-primary" id="convertAllBtn">⚡ Convert All</button>
+    <button class="btn btn-gold" id="downloadZipBtn" disabled>📦 Download ZIP</button>
+    <button class="btn btn-teal" id="downloadAllBtn" disabled>📥 Download All</button>
+    <button class="btn btn-ghost" id="clearBtn">🗑 Clear</button>
+  </div>
+
+  <div id="progressWrap" class="hidden" style="padding:0 0 1rem">
+    <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;font-size:.82rem;font-family:var(--mono);color:var(--text2)">
+      <span id="progressLabel">Converting...</span><span id="progressText">0 / 0</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0"></div></div>
+  </div>
+
+  <div class="section-gap">
+    <div class="card-title" data-i18n="whyTitle" style="margin-bottom:1rem">Why use this converter?</div>
+    <div class="feature-grid">
+      <div class="feat"><div class="feat-icon">🎯</div><div class="feat-title" data-i18n="feat1t">ICO with Multiple Sizes</div><div class="feat-desc" data-i18n="feat1d">Generate proper .ico files containing 16×16 through 256×256 icons in a single file — perfect for Windows apps and favicons.</div></div>
+      <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title" data-i18n="feat2t">100% Private</div><div class="feat-desc" data-i18n="feat2d">All processing runs in your browser using the Canvas API. No uploads, no servers, no tracking. Your images stay on your device.</div></div>
+      <div class="feat"><div class="feat-icon">⚡</div><div class="feat-title" data-i18n="feat3t">Batch Conversion</div><div class="feat-desc" data-i18n="feat3d">Convert dozens of images at once. Download individually or grab everything as a ZIP archive in one click.</div></div>
+      <div class="feat"><div class="feat-icon">🎨</div><div class="feat-title" data-i18n="feat4t">Filters & Effects</div><div class="feat-desc" data-i18n="feat4d">Apply brightness, contrast, saturation, blur, sepia, grayscale, and invert. Use quick presets for Vintage, Vivid, and Noir looks.</div></div>
+      <div class="feat"><div class="feat-icon">📐</div><div class="feat-title" data-i18n="feat5t">Resize & Rotate</div><div class="feat-desc" data-i18n="feat5d">Resize to exact pixel dimensions with optional aspect ratio lock. Rotate 0/90/180/270° and flip horizontally or vertically.</div></div>
+      <div class="feat"><div class="feat-icon">💧</div><div class="feat-title" data-i18n="feat6t">Watermark</div><div class="feat-desc" data-i18n="feat6d">Add custom text watermarks with adjustable size, color, opacity, and position — applied at conversion time.</div></div>
+    </div>
+  </div>
+
+  <!-- FAQ — rendered by JS -->
+  <div class="section-gap card">
+    <div class="card-title" data-i18n="faqTitle" style="margin-bottom:1rem">Frequently Asked Questions</div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+
+  <div class="section-gap hidden" id="historySection">
+    <div class="card-title" data-i18n="histTitle" style="margin-bottom:.75rem">Recent Conversions</div>
+    <div id="historyList"></div>
+    <button class="btn btn-ghost btn-sm" id="clearHistBtn" data-i18n="histClear" style="margin-top:.75rem">Clear History</button>
+  </div>
+
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
 <footer class="footer">
-    <p data-i18n="footerText">© 2024 Image Converter. All conversions happen locally in your browser.</p>
+  <div class="footer-links">
+    <a href="#" data-i18n="footerAbout">About</a>
+    <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
+    <a href="#" data-i18n="footerContact">Contact</a>
+    <a href="#" data-i18n="footerGithub">GitHub</a>
+  </div>
+  <p data-i18n="footerText">© 2025 Image.Convert — All processing happens locally in your browser. No data leaves your device.</p>
 </footer>
 
 <script>
-// Translations
-const translations = {
-    en: {
-        title: "Image Converter",
-        heroTitle: "Free Online Image Converter",
-        heroDesc: "Convert images to PNG, JPG, WebP and more. Fast, secure, and completely private - all processing happens in your browser.",
-        dropZoneText: "Drop images here or click to upload",
-        dropZoneSubtext: "Supports: PNG, JPG, JPEG, WebP, GIF, BMP | Multiple files allowed",
-        selectFormat: "Select Output Format",
-        formatPngDesc: "Lossless, transparency",
-        formatJpegDesc: "Smaller size",
-        formatWebpDesc: "Modern, efficient",
-        formatBmpDesc: "Uncompressed",
-        quality: "Quality:",
-        resize: "Resize Images:",
-        width: "Width:",
-        maintainAspect: "Maintain Aspect Ratio:",
-        convertAll: "Convert All",
-        downloadAll: "Download All",
-        clear: "Clear",
-        download: "Download",
-        convert: "Convert",
-        featurePrivacyTitle: "100% Privacy",
-        featurePrivacyDesc: "All processing happens in your browser. Your images never leave your device.",
-        featureSpeedTitle: "Lightning Fast",
-        featureSpeedDesc: "Instant conversion with no waiting. Convert multiple images at once.",
-        featureCompareTitle: "Size Comparison",
-        featureCompareDesc: "See exactly how much space you save with each conversion.",
-        featureResizeTitle: "Resize & Optimize",
-        featureResizeDesc: "Change dimensions and optimize quality before converting.",
-        featureMobileTitle: "Mobile Friendly",
-        featureMobileDesc: "Works perfectly on all devices - desktop, tablet, and mobile.",
-        featureOfflineTitle: "Works Offline",
-        featureOfflineDesc: "No internet required after loading. Convert anywhere, anytime.",
-        conversionHistory: "Conversion History",
-        clearHistory: "Clear History",
-        footerText: "© 2024 Image Converter. All conversions happen locally in your browser.",
-        original: "Original",
-        converted: "Converted",
-        saved: "saved"
-    },
-    ru: {
-        title: "Конвертер изображений",
-        heroTitle: "Бесплатный онлайн конвертер изображений",
-        heroDesc: "Конвертируйте изображения в PNG, JPG, WebP и другие форматы. Быстро, безопасно и полностью конфиденциально - вся обработка происходит в вашем браузере.",
-        dropZoneText: "Перетащите изображения сюда или нажмите для загрузки",
-        dropZoneSubtext: "Поддерживаются: PNG, JPG, JPEG, WebP, GIF, BMP | Можно несколько файлов",
-        selectFormat: "Выберите формат",
-        formatPngDesc: "Без потерь, прозрачность",
-        formatJpegDesc: "Меньший размер",
-        formatWebpDesc: "Современный, эффективный",
-        formatBmpDesc: "Несжатый",
-        quality: "Качество:",
-        resize: "Изменить размер:",
-        width: "Ширина:",
-        maintainAspect: "Сохранять пропорции:",
-        convertAll: "Конвертировать все",
-        downloadAll: "Скачать все",
-        clear: "Очистить",
-        download: "Скачать",
-        convert: "Конвертировать",
-        featurePrivacyTitle: "100% Конфиденциально",
-        featurePrivacyDesc: "Вся обработка происходит в вашем браузере. Ваши изображения не покидают ваше устройство.",
-        featureSpeedTitle: "Молниеносно",
-        featureSpeedDesc: "Мгновенная конвертация без ожидания. Конвертируйте несколько изображений сразу.",
-        featureCompareTitle: "Сравнение размера",
-        featureCompareDesc: "Точно видьте, сколько места вы экономите при каждой конвертации.",
-        featureResizeTitle: "Изменение размера",
-        featureResizeDesc: "Меняйте размеры и оптимизируйте качество перед конвертацией.",
-        featureMobileTitle: "Для мобильных",
-        featureMobileDesc: "Отлично работает на всех устройствах - компьютер, планшет и смартфон.",
-        featureOfflineTitle: "Работает оффлайн",
-        featureOfflineDesc: "Не требуется интернет после загрузки. Конвертируйте где угодно и когда угодно.",
-        conversionHistory: "История конвертаций",
-        clearHistory: "Очистить историю",
-        footerText: "© 2024 Конвертер изображений. Все конвертации происходят локально в вашем браузере.",
-        original: "Оригинал",
-        converted: "Сжато",
-        saved: "сохранено"
-    },
-    es: {
-        title: "Convertidor de Imágenes",
-        heroTitle: "Convertidor de Imágenes Online Gratis",
-        heroDesc: "Convierte imágenes a PNG, JPG, WebP y más. Rápido, seguro y completamente privado - todo el procesamiento ocurre en tu navegador.",
-        dropZoneText: "Arrastra imágenes aquí o haz clic para subir",
-        dropZoneSubtext: "Soporta: PNG, JPG, JPEG, WebP, GIF, BMP | Múltiples archivos permitidos",
-        selectFormat: "Seleccionar formato de salida",
-        formatPngDesc: "Sin pérdida, transparencia",
-        formatJpegDesc: "Tamaño menor",
-        formatWebpDesc: "Moderno, eficiente",
-        formatBmpDesc: "Sin comprimir",
-        quality: "Calidad:",
-        resize: "Redimensionar:",
-        width: "Ancho:",
-        maintainAspect: "Mantener proporción:",
-        convertAll: "Convertir todo",
-        downloadAll: "Descargar todo",
-        clear: "Limpiar",
-        download: "Descargar",
-        convert: "Convertir",
-        featurePrivacyTitle: "100% Privado",
-        featurePrivacyDesc: "Todo el procesamiento ocurre en tu navegador. Tus imágenes nunca salen de tu dispositivo.",
-        featureSpeedTitle: "Súper Rápido",
-        featureSpeedDesc: "Conversión instantánea sin esperas. Convierte múltiples imágenes a la vez.",
-        featureCompareTitle: "Comparación de Tamaño",
-        featureCompareDesc: "Ve exactamente cuánto espacio ahorras con cada conversión.",
-        featureResizeTitle: "Redimensionar y Optimizar",
-        featureResizeDesc: "Cambia dimensiones y optimiza la calidad antes de convertir.",
-        featureMobileTitle: "Compatible con Móvil",
-        featureMobileDesc: "Funciona perfectamente en todos los dispositivos - escritorio, tableta y móvil.",
-        featureOfflineTitle: "Funciona Sin Internet",
-        featureOfflineDesc: "No se requiere internet después de cargar. Convierte donde sea, cuando sea.",
-        conversionHistory: "Historial de Conversiones",
-        clearHistory: "Borrar Historial",
-        footerText: "© 2024 Convertidor de Imágenes. Todas las conversiones ocurren localmente en tu navegador.",
-        original: "Original",
-        converted: "Convertido",
-        saved: "ahorrado"
-    },
-    fr: {
-        title: "Convertisseur d'Images",
-        heroTitle: "Convertisseur d'Images en Ligne Gratuit",
-        heroDesc: "Convertissez des images en PNG, JPG, WebP et plus. Rapide, sécurisé et totalement privé - tout le traitement se fait dans votre navigateur.",
-        dropZoneText: "Déposez des images ici ou cliquez pour télécharger",
-        dropZoneSubtext: "Prend en charge: PNG, JPG, JPEG, WebP, GIF, BMP | Plusieurs fichiers autorisés",
-        selectFormat: "Sélectionner le format de sortie",
-        formatPngDesc: "Sans perte, transparence",
-        formatJpegDesc: "Taille réduite",
-        formatWebpDesc: "Moderne, efficace",
-        formatBmpDesc: "Non compressé",
-        quality: "Qualité:",
-        resize: "Redimensionner:",
-        width: "Largeur:",
-        maintainAspect: "Maintenir les proportions:",
-        convertAll: "Tout convertir",
-        downloadAll: "Tout télécharger",
-        clear: "Effacer",
-        download: "Télécharger",
-        convert: "Convertir",
-        featurePrivacyTitle: "100% Privé",
-        featurePrivacyDesc: "Tout le traitement se fait dans votre navigateur. Vos images ne quittent jamais votre appareil.",
-        featureSpeedTitle: "Ultra Rapide",
-        featureSpeedDesc: "Conversion instantanée sans attente. Convertissez plusieurs images à la fois.",
-        featureCompareTitle: "Comparaison de Taille",
-        featureCompareDesc: "Voyez exactement combien d'espace vous économisez avec chaque conversion.",
-        featureResizeTitle: "Redimensionner et Optimiser",
-        featureResizeDesc: "Modifiez les dimensions et optimisez la qualité avant de convertir.",
-        featureMobileTitle: "Compatible Mobile",
-        featureMobileDesc: "Fonctionne parfaitement sur tous les appareils - ordinateur, tablette et mobile.",
-        featureOfflineTitle: "Fonctionne Hors Ligne",
-        featureOfflineDesc: "Pas besoin d'internet après le chargement. Convertissez n'importe où, n'importe quand.",
-        conversionHistory: "Historique des Conversions",
-        clearHistory: "Effacer l'Historique",
-        footerText: "© 2024 Convertisseur d'Images. Toutes les conversions se font localement dans votre navigateur.",
-        original: "Original",
-        converted: "Converti",
-        saved: "économisé"
-    },
-    de: {
-        title: "Bildkonverter",
-        heroTitle: "Kostenloser Online-Bildkonverter",
-        heroDesc: "Konvertieren Sie Bilder in PNG, JPG, WebP und mehr. Schnell, sicher und völlig privat - alle Verarbeitung erfolgt in Ihrem Browser.",
-        dropZoneText: "Bilder hier ablegen oder zum Hochladen klicken",
-        dropZoneSubtext: "Unterstützt: PNG, JPG, JPEG, WebP, GIF, BMP | Mehrere Dateien erlaubt",
-        selectFormat: "Ausgabeformat wählen",
-        formatPngDesc: "Verlustfrei, Transparenz",
-        formatJpegDesc: "Kleinere Größe",
-        formatWebpDesc: "Modern, effizient",
-        formatBmpDesc: "Unkomprimiert",
-        quality: "Qualität:",
-        resize: "Größe ändern:",
-        width: "Breite:",
-        maintainAspect: "Seitenverhältnis beibehalten:",
-        convertAll: "Alle konvertieren",
-        downloadAll: "Alle herunterladen",
-        clear: "Löschen",
-        download: "Herunterladen",
-        convert: "Konvertieren",
-        featurePrivacyTitle: "100% Privat",
-        featurePrivacyDesc: "Alle Verarbeitung erfolgt in Ihrem Browser. Ihre Bilder verlassen nie Ihr Gerät.",
-        featureSpeedTitle: "Blitzschnell",
-        featureSpeedDesc: "Sofortige Konvertierung ohne Warten. Konvertieren Sie mehrere Bilder gleichzeitig.",
-        featureCompareTitle: "Größenvergleich",
-        featureCompareDesc: "Sehen Sie genau, wie viel Platz Sie mit jeder Konvertierung sparen.",
-        featureResizeTitle: "Größe ändern & Optimieren",
-        featureResizeDesc: "Ändern Sie Abmessungen und optimieren Sie die Qualität vor der Konvertierung.",
-        featureMobileTitle: "Mobilfreundlich",
-        featureMobileDesc: "Funktioniert perfekt auf allen Geräten - Desktop, Tablet und Handy.",
-        featureOfflineTitle: "Funktioniert Offline",
-        featureOfflineDesc: "Kein Internet nach dem Laden erforderlich. Konvertieren Sie überall und jederzeit.",
-        conversionHistory: "Konvertierungsverlauf",
-        clearHistory: "Verlauf löschen",
-        footerText: "© 2024 Bildkonverter. Alle Konvertierungen erfolgen lokal in Ihrem Browser.",
-        original: "Original",
-        converted: "Konvertiert",
-        saved: "gespart"
-    },
-    zh: {
-        title: "图像转换器",
-        heroTitle: "免费在线图像转换器",
-        heroDesc: "将图像转换为PNG、JPG、WebP等格式。快速、安全、完全私密 - 所有处理都在您的浏览器中进行。",
-        dropZoneText: "将图像拖放到此处或点击上传",
-        dropZoneSubtext: "支持：PNG、JPG、JPEG、WebP、GIF、BMP | 允许多个文件",
-        selectFormat: "选择输出格式",
-        formatPngDesc: "无损，透明度",
-        formatJpegDesc: "更小的尺寸",
-        formatWebpDesc: "现代、高效",
-        formatBmpDesc: "未压缩",
-        quality: "质量：",
-        resize: "调整大小：",
-        width: "宽度：",
-        maintainAspect: "保持纵横比：",
-        convertAll: "全部转换",
-        downloadAll: "全部下载",
-        clear: "清除",
-        download: "下载",
-        convert: "转换",
-        featurePrivacyTitle: "100%隐私",
-        featurePrivacyDesc: "所有处理都在您的浏览器中进行。您的图像永远不会离开您的设备。",
-        featureSpeedTitle: "闪电般快速",
-        featureSpeedDesc: "即时转换，无需等待。一次转换多张图像。",
-        featureCompareTitle: "大小比较",
-        featureCompareDesc: "准确了解每次转换节省了多少空间。",
-        featureResizeTitle: "调整大小和优化",
-        featureResizeDesc: "在转换前更改尺寸并优化质量。",
-        featureMobileTitle: "移动友好",
-        featureMobileDesc: "在所有设备上完美运行 - 台式机、平板电脑和手机。",
-        featureOfflineTitle: "离线工作",
-        featureOfflineDesc: "加载后无需互联网。随时随地转换。",
-        conversionHistory: "转换历史",
-        clearHistory: "清除历史",
-        footerText: "© 2024 图像转换器。所有转换都在您的浏览器中本地进行。",
-        original: "原始",
-        converted: "转换后",
-        saved: "已保存"
-    },
-    ja: {
-        title: "画像コンバーター",
-        heroTitle: "無料オンライン画像コンバーター",
-        heroDesc: "画像をPNG、JPG、WebPなどに変換。高速、安全、完全にプライベート - すべての処理はブラウザで行われます。",
-        dropZoneText: "画像をここにドロップするかクリックしてアップロード",
-        dropZoneSubtext: "対応：PNG、JPG、JPEG、WebP、GIF、BMP | 複数ファイル可",
-        selectFormat: "出力形式を選択",
-        formatPngDesc: "ロスレス、透明度",
-        formatJpegDesc: "サイズ小",
-        formatWebpDesc: "モダン、効率的",
-        formatBmpDesc: "非圧縮",
-        quality: "品質：",
-        resize: "リサイズ：",
-        width: "幅：",
-        maintainAspect: "縦横比を維持：",
-        convertAll: "すべて変換",
-        downloadAll: "すべてダウンロード",
-        clear: "クリア",
-        download: "ダウンロード",
-        convert: "変換",
-        featurePrivacyTitle: "100%プライバシー",
-        featurePrivacyDesc: "すべての処理はブラウザで行われます。画像がデバイスから離れることはありません。",
-        featureSpeedTitle: "超高速",
-        featureSpeedDesc: "待ち時間なしで即座に変換。複数の画像を一度に変換。",
-        featureCompareTitle: "サイズ比較",
-        featureCompareDesc: "各変換でどれだけスペースを節約できるか正確に確認。",
-        featureResizeTitle: "リサイズと最適化",
-        featureResizeDesc: "変換前に寸法を変更し、品質を最適化。",
-        featureMobileTitle: "モバイルフレンドリー",
-        featureMobileDesc: "すべてのデバイスで完璧に動作 - デスクトップ、タブレット、モバイル。",
-        featureOfflineTitle: "オフラインで動作",
-        featureOfflineDesc: "読み込み後はインターネット不要。いつでもどこでも変換。",
-        conversionHistory: "変換履歴",
-        clearHistory: "履歴をクリア",
-        footerText: "© 2024 画像コンバーター。すべての変換はブラウザでローカルに行われます。",
-        original: "オリジナル",
-        converted: "変換後",
-        saved: "節約"
-    },
-    pt: {
-        title: "Conversor de Imagens",
-        heroTitle: "Conversor de Imagens Online Grátis",
-        heroDesc: "Converta imagens para PNG, JPG, WebP e mais. Rápido, seguro e completamente privado - todo processamento acontece no seu navegador.",
-        dropZoneText: "Solte imagens aqui ou clique para fazer upload",
-        dropZoneSubtext: "Suporta: PNG, JPG, JPEG, WebP, GIF, BMP | Vários arquivos permitidos",
-        selectFormat: "Selecionar formato de saída",
-        formatPngDesc: "Sem perda, transparência",
-        formatJpegDesc: "Tamanho menor",
-        formatWebpDesc: "Moderno, eficiente",
-        formatBmpDesc: "Não comprimido",
-        quality: "Qualidade:",
-        resize: "Redimensionar:",
-        width: "Largura:",
-        maintainAspect: "Manter proporção:",
-        convertAll: "Converter tudo",
-        downloadAll: "Baixar tudo",
-        clear: "Limpar",
-        download: "Baixar",
-        convert: "Converter",
-        featurePrivacyTitle: "100% Privado",
-        featurePrivacyDesc: "Todo processamento acontece no seu navegador. Suas imagens nunca saem do seu dispositivo.",
-        featureSpeedTitle: "Super Rápido",
-        featureSpeedDesc: "Conversão instantânea sem espera. Converta várias imagens de uma vez.",
-        featureCompareTitle: "Comparação de Tamanho",
-        featureCompareDesc: "Veja exatamente quanto espaço você economiza com cada conversão.",
-        featureResizeTitle: "Redimensionar e Otimizar",
-        featureResizeDesc: "Altere dimensões e otimize a qualidade antes de converter.",
-        featureMobileTitle: "Compatível com Mobile",
-        featureMobileDesc: "Funciona perfeitamente em todos os dispositivos - desktop, tablet e celular.",
-        featureOfflineTitle: "Funciona Offline",
-        featureOfflineDesc: "Sem necessidade de internet após carregar. Converta onde e quando quiser.",
-        conversionHistory: "Histórico de Conversões",
-        clearHistory: "Limpar Histórico",
-        footerText: "© 2024 Conversor de Imagens. Todas as conversões acontecem localmente no seu navegador.",
-        original: "Original",
-        converted: "Convertido",
-        saved: "economizado"
-    },
-    it: {
-        title: "Convertitore di Immagini",
-        heroTitle: "Convertitore di Immagini Online Gratuito",
-        heroDesc: "Converti immagini in PNG, JPG, WebP e altro. Veloce, sicuro e completamente privato - tutta l'elaborazione avviene nel tuo browser.",
-        dropZoneText: "Trascina le immagini qui o clicca per caricare",
-        dropZoneSubtext: "Supporta: PNG, JPG, JPEG, WebP, GIF, BMP | Più file consentiti",
-        selectFormat: "Seleziona formato di output",
-        formatPngDesc: "Senza perdita, trasparenza",
-        formatJpegDesc: "Dimensione minore",
-        formatWebpDesc: "Moderno, efficiente",
-        formatBmpDesc: "Non compresso",
-        quality: "Qualità:",
-        resize: "Ridimensiona:",
-        width: "Larghezza:",
-        maintainAspect: "Mantieni proporzioni:",
-        convertAll: "Converti tutto",
-        downloadAll: "Scarica tutto",
-        clear: "Cancella",
-        download: "Scarica",
-        convert: "Converti",
-        featurePrivacyTitle: "100% Privacy",
-        featurePrivacyDesc: "Tutta l'elaborazione avviene nel tuo browser. Le tue immagini non lasciano mai il tuo dispositivo.",
-        featureSpeedTitle: "Velocissimo",
-        featureSpeedDesc: "Conversione istantanea senza attesa. Converti più immagini contemporaneamente.",
-        featureCompareTitle: "Confronto Dimensioni",
-        featureCompareDesc: "Vedi esattamente quanto spazio risparmi con ogni conversione.",
-        featureResizeTitle: "Ridimensiona e Ottimizza",
-        featureResizeDesc: "Cambia dimensioni e ottimizza la qualità prima di convertire.",
-        featureMobileTitle: "Mobile Friendly",
-        featureMobileDesc: "Funziona perfettamente su tutti i dispositivi - desktop, tablet e mobile.",
-        featureOfflineTitle: "Funziona Offline",
-        featureOfflineDesc: "Nessuna connessione internet necessaria dopo il caricamento. Converti ovunque, in qualsiasi momento.",
-        conversionHistory: "Cronologia Conversioni",
-        clearHistory: "Cancella Cronologia",
-        footerText: "© 2024 Convertitore di Immagini. Tutte le conversioni avvengono localmente nel tuo browser.",
-        original: "Originale",
-        converted: "Convertito",
-        saved: "risparmiato"
-    },
-    ar: {
-        title: "محول الصور",
-        heroTitle: "محول الصور المجاني عبر الإنترنت",
-        heroDesc: "قم بتحويل الصور إلى PNG و JPG و WebP والمزيد. سريع وآمن وخاص تمامًا - تتم جميع المعالجة في متصفحك.",
-        dropZoneText: "اسحب الصور هنا أو انقر للتحميل",
-        dropZoneSubtext: "يدعم: PNG، JPG، JPEG، WebP، GIF، BMP | ملفات متعددة مسموح بها",
-        selectFormat: "اختر تنسيق الإخراج",
-        formatPngDesc: "بدون فقدان، شفافية",
-        formatJpegDesc: "حجم أصغر",
-        formatWebpDesc: "حديث، فعال",
-        formatBmpDesc: "غير مضغوط",
-        quality: "الجودة:",
-        resize: "تغيير الحجم:",
-        width: "العرض:",
-        maintainAspect: "الحفاظ على نسبة العرض:",
-        convertAll: "تحويل الكل",
-        downloadAll: "تنزيل الكل",
-        clear: "مسح",
-        download: "تنزيل",
-        convert: "تحويل",
-        featurePrivacyTitle: "100٪ خاص",
-        featurePrivacyDesc: "تتم جميع المعالجة في متصفحك. لن تترك صورك جهازك أبدًا.",
-        featureSpeedTitle: "سريع للغاية",
-        featureSpeedDesc: "تحويل فوري بدون انتظار. قم بتحويل صور متعددة في وقت واحد.",
-        featureCompareTitle: "مقارنة الحجم",
-        featureCompareDesc: "شاهد بالضبط مقدار المساحة التي توفرها مع كل تحويل.",
-        featureResizeTitle: "تغيير الحجم والتحسين",
-        featureResizeDesc: "قم بتغيير الأبعاد وتحسين الجودة قبل التحويل.",
-        featureMobileTitle: "متوافق مع الجوال",
-        featureMobileDesc: "يعمل بشكل مثالي على جميع الأجهزة - سطح المكتب والجهاز اللوحي والجوال.",
-        featureOfflineTitle: "يعمل دون اتصال",
-        featureOfflineDesc: "لا يلزم الاتصال بالإنترنت بعد التحميل. قم بالتحويل في أي مكان وفي أي وقت.",
-        conversionHistory: "سجل التحويلات",
-        clearHistory: "مسح السجل",
-        footerText: "© 2024 محول الصور. تتم جميع التحويلات محليًا في متصفحك.",
-        original: "الأصلي",
-        converted: "المحول",
-        saved: "محفوظ"
-    },
-    hi: {
-        title: "छवि परिवर्तक",
-        heroTitle: "मुफ्त ऑनलाइन छवि परिवर्तक",
-        heroDesc: "छवियों को PNG, JPG, WebP और अधिक में परिवर्तित करें। तेज़, सुरक्षित और पूरी तरह से निजी - सभी प्रसंस्करण आपके ब्राउज़र में होता है।",
-        dropZoneText: "छवियों को यहां खींचें या अपलोड करने के लिए क्लिक करें",
-        dropZoneSubtext: "समर्थित: PNG, JPG, JPEG, WebP, GIF, BMP | एकाधिक फाइलों की अनुमति है",
-        selectFormat: "आउटपुट प्रारूप चुनें",
-        formatPngDesc: "हानिरहित, पारदर्शिता",
-        formatJpegDesc: "छोटा आकार",
-        formatWebpDesc: "आधुनिक, कुशल",
-        formatBmpDesc: "असंपीड़ित",
-        quality: "गुणवत्ता:",
-        resize: "आकार बदलें:",
-        width: "चौड़ाई:",
-        maintainAspect: "पहलू अनुपात बनाए रखें:",
-        convertAll: "सभी को परिवर्तित करें",
-        downloadAll: "सभी डाउनलोड करें",
-        clear: "साफ़ करें",
-        download: "डाउनलोड",
-        convert: "परिवर्तित करें",
-        featurePrivacyTitle: "100% गोपनीयता",
-        featurePrivacyDesc: "सभी प्रसंस्करण आपके ब्राउज़र में होता है। आपकी छवियां कभी भी आपके डिवाइस को नहीं छोड़तीं।",
-        featureSpeedTitle: "बिजली की तेजी",
-        featureSpeedDesc: "बिना प्रतीक्षा के तत्काल रूपांतरण। एक बार में कई छवियां परिवर्तित करें।",
-        featureCompareTitle: "आकार तुलना",
-        featureCompareDesc: "प्रत्येक रूपांतरण के साथ आप कितनी जगह बचाते हैं, यह देखें।",
-        featureResizeTitle: "आकार बदलें और अनुकूलित करें",
-        featureResizeDesc: "परिवर्तित करने से पहले आयाम बदलें और गुणवत्ता को अनुकूलित करें।",
-        featureMobileTitle: "मोबाइल के अनुकूल",
-        featureMobileDesc: "सभी उपकरणों पर पूरी तरह से काम करता है - डेस्कटॉप, टैबलेट और मोबाइल।",
-        featureOfflineTitle: "ऑफ़लाइन काम करता है",
-        featureOfflineDesc: "लोड होने के बाद इंटरनेट की आवश्यकता नहीं। कहीं भी, कभी भी परिवर्तित करें।",
-        conversionHistory: "रूपांतरण इतिहास",
-        clearHistory: "इतिहास साफ़ करें",
-        footerText: "© 2024 छवि परिवर्तक। सभी रूपांतरण आपके ब्राउज़र में स्थानीय रूप से होते हैं।",
-        original: "मूल",
-        converted: "परिवर्तित",
-        saved: "बचाया"
-    }
+// ══════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════
+const T = {
+  en:{
+    heroTitle:'Free <span>Image Converter</span><br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Batch convert, resize, filter and watermark images. All processing happens in your browser — your files never leave your device.',
+    dropTitle:'Drop images here or click to browse', dropSub:'Multiple files supported',
+    tabFormat:'🎨 Format', tabAdj:'🛠 Adjustments', tabFilters:'✨ Filters', tabWm:'💧 Watermark',
+    secFormat:'Output Format', secUpload:'Upload Images',
+    fmtPngDesc:'Lossless + alpha', fmtJpgDesc:'Small size', fmtWebpDesc:'Modern format',
+    fmtIcoDesc:'Favicon ready', fmtGifDesc:'Animated', fmtBmpDesc:'Uncompressed',
+    fmtAvifDesc:'Next-gen', fmtTiffDesc:'Print quality',
+    icoSizes:'ICO sizes to generate',
+    icoNote:'💡 Each ICO file will contain all selected sizes — perfect for Windows icons and favicons.',
+    qualLabel:'Quality', bgLabel:'Background Color (for transparency)', keepTransp:'Keep transparency',
+    resizeLabel:'Resize', enableResize:'Enable resize', lockAspect:'Lock aspect ratio', rotateLabel:'Rotate & Flip',
+    presetsLabel:'Quick presets:',
+    wmLabel:'Watermark Text', enableWm:'Enable watermark', wmPlaceholder:'© Your Name 2025',
+    wmFontSize:'Font Size', wmStyle:'Watermark Style',
+    btnConvertAll:'⚡ Convert All', btnZip:'📦 Download ZIP', btnDownloadAll:'📥 Download All', btnClear:'🗑 Clear',
+    btnConvert:'⚡ Convert', btnDownload:'📥 Download', btnCompare:'👁 Compare', btnRemove:'✕',
+    statusDone:'✓ Done', statusPending:'⏳ Pending',
+    converting:'Converting...', allConverted:'✅ All converted!', allAlready:'✅ All files already converted',
+    zipDone:'📦 ZIP downloaded!', noFiles:'⚠️ No valid image files found',
+    whyTitle:'Why use this converter?',
+    feat1t:'ICO with Multiple Sizes', feat1d:'Generate proper .ico files containing 16×16 through 256×256 icons in a single file — perfect for Windows apps and favicons.',
+    feat2t:'100% Private', feat2d:'All processing runs in your browser using the Canvas API. No uploads, no servers, no tracking.',
+    feat3t:'Batch Conversion', feat3d:'Convert dozens of images at once. Download individually or grab everything as a ZIP archive.',
+    feat4t:'Filters & Effects', feat4d:'Apply brightness, contrast, saturation, blur, sepia, grayscale, and invert. Use quick presets.',
+    feat5t:'Resize & Rotate', feat5d:'Resize to exact pixel dimensions with optional aspect ratio lock. Rotate and flip.',
+    feat6t:'Watermark', feat6d:'Add custom text watermarks with adjustable size, color, opacity, and position.',
+    faqTitle:'Frequently Asked Questions',
+    faq1q:'How do I convert a PNG to ICO for a favicon?',
+    faq1a:'Upload your PNG, select ICO as the output format, choose which sizes you need (16×16, 32×32, 48×48, etc.), then click Convert. The resulting .ico file contains all selected sizes — rename it to favicon.ico and place it in your website root.',
+    faq2q:'Are my images uploaded to a server?',
+    faq2a:'Never. All conversion happens locally in your browser using the HTML5 Canvas API and JavaScript. Your images are not uploaded anywhere. You can even disconnect from the internet after the page loads and conversions will still work.',
+    faq3q:'What\'s the difference between WebP, AVIF and JPEG?',
+    faq3a:'JPEG is widely compatible and works everywhere. WebP offers 25–34% smaller files than JPEG at similar quality and is supported by all modern browsers. AVIF is the newest format and can be 50% smaller than JPEG, but browser support is still growing (Chrome, Firefox, Safari 16+).',
+    faq4q:'Can I convert multiple images at once?',
+    faq4a:'Yes! Upload as many images as you like, configure your settings once, then click "Convert All". Use "Download ZIP" to get all converted files in a single archive.',
+    faq5q:'Why does the file size estimate differ from the actual download?',
+    faq5a:'File size is estimated from the base64 canvas data URL, which is a close approximation. The actual downloaded file may differ slightly due to final encoding. For ICO files, size depends on how many size variants are included.',
+    histTitle:'Recent Conversions', histClear:'Clear History',
+    saved:'saved', origLabel:'📷 Original', convLabel:'✨ Converted',
+    beforeAfter:'Before / After', closeBtn:'✕ Close',
+    footerText:'© 2025 Image.Convert — All processing happens locally in your browser. No data leaves your device.',
+    footerAbout:'About', footerPrivacy:'Privacy Policy', footerContact:'Contact', footerGithub:'GitHub',
+  },
+  ru:{
+    heroTitle:'Бесплатный <span>конвертер</span><br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Пакетная конвертация, изменение размера, фильтры и водяные знаки. Вся обработка в браузере — файлы не покидают устройство.',
+    dropTitle:'Перетащите изображения или нажмите для выбора', dropSub:'Поддерживается несколько файлов',
+    tabFormat:'🎨 Формат', tabAdj:'🛠 Настройки', tabFilters:'✨ Фильтры', tabWm:'💧 Водяной знак',
+    secFormat:'Формат вывода', secUpload:'Загрузка изображений',
+    fmtPngDesc:'Без потерь + альфа', fmtJpgDesc:'Маленький размер', fmtWebpDesc:'Современный',
+    fmtIcoDesc:'Для favicon', fmtGifDesc:'Анимация', fmtBmpDesc:'Без сжатия',
+    fmtAvifDesc:'Следующее поколение', fmtTiffDesc:'Для печати',
+    icoSizes:'Размеры ICO для генерации',
+    icoNote:'💡 Каждый ICO файл будет содержать все выбранные размеры — идеально для Windows и favicon.',
+    qualLabel:'Качество', bgLabel:'Цвет фона (для прозрачных)', keepTransp:'Сохранить прозрачность',
+    resizeLabel:'Изменить размер', enableResize:'Включить изменение размера', lockAspect:'Сохранять пропорции', rotateLabel:'Поворот и отражение',
+    presetsLabel:'Быстрые пресеты:',
+    wmLabel:'Текст водяного знака', enableWm:'Включить водяной знак', wmPlaceholder:'© Ваше имя 2025',
+    wmFontSize:'Размер шрифта', wmStyle:'Стиль водяного знака',
+    btnConvertAll:'⚡ Конвертировать все', btnZip:'📦 Скачать ZIP', btnDownloadAll:'📥 Скачать все', btnClear:'🗑 Очистить',
+    btnConvert:'⚡ Конвертировать', btnDownload:'📥 Скачать', btnCompare:'👁 Сравнить', btnRemove:'✕',
+    statusDone:'✓ Готово', statusPending:'⏳ Ожидание',
+    converting:'Конвертирование...', allConverted:'✅ Все конвертированы!', allAlready:'✅ Все файлы уже конвертированы',
+    zipDone:'📦 ZIP скачан!', noFiles:'⚠️ Нет подходящих изображений',
+    whyTitle:'Почему этот конвертер?',
+    feat1t:'ICO с несколькими размерами', feat1d:'Генерирует .ico файлы с размерами от 16×16 до 256×256 в одном файле — идеально для Windows и favicon.',
+    feat2t:'100% конфиденциально', feat2d:'Вся обработка в браузере через Canvas API. Никаких загрузок, серверов и слежки.',
+    feat3t:'Пакетная конвертация', feat3d:'Конвертируйте десятки изображений за раз. Скачивайте по отдельности или ZIP-архивом.',
+    feat4t:'Фильтры и эффекты', feat4d:'Яркость, контраст, насыщенность, размытие, сепия, ч/б, инверсия. Готовые пресеты.',
+    feat5t:'Изменение размера и поворот', feat5d:'Точные размеры в пикселях с блокировкой пропорций. Поворот и отражение.',
+    feat6t:'Водяной знак', feat6d:'Текстовые водяные знаки с настройкой размера, цвета, прозрачности и позиции.',
+    faqTitle:'Часто задаваемые вопросы',
+    faq1q:'Как конвертировать PNG в ICO для favicon?',
+    faq1a:'Загрузите PNG, выберите ICO как формат вывода, отметьте нужные размеры (16×16, 32×32, 48×48 и т.д.), нажмите «Конвертировать». Полученный .ico файл содержит все выбранные размеры — переименуйте его в favicon.ico и поместите в корень сайта.',
+    faq2q:'Загружаются ли изображения на сервер?',
+    faq2a:'Нет. Вся конвертация происходит локально в браузере через Canvas API. Изображения никуда не отправляются. После загрузки страницы можно работать без интернета.',
+    faq3q:'В чём разница между WebP, AVIF и JPEG?',
+    faq3a:'JPEG совместим везде. WebP на 25–34% меньше JPEG при схожем качестве, поддерживается всеми современными браузерами. AVIF — новейший формат, до 50% меньше JPEG, но поддержка браузерами ещё растёт (Chrome, Firefox, Safari 16+).',
+    faq4q:'Можно конвертировать несколько изображений сразу?',
+    faq4a:'Да! Загрузите сколько угодно, настройте параметры один раз, нажмите «Конвертировать все». Используйте «Скачать ZIP» для загрузки всего архивом.',
+    faq5q:'Почему размер файла отличается от реального?',
+    faq5a:'Размер оценивается по данным base64 из Canvas — это приближённое значение. Реальный файл может незначительно отличаться. Для ICO размер зависит от количества включённых вариантов.',
+    histTitle:'Последние конвертации', histClear:'Очистить историю',
+    saved:'сохранено', origLabel:'📷 Оригинал', convLabel:'✨ Конвертировано',
+    beforeAfter:'До / После', closeBtn:'✕ Закрыть',
+    footerText:'© 2025 Image.Convert — Вся обработка происходит локально в вашем браузере.',
+    footerAbout:'О сайте', footerPrivacy:'Политика конфиденциальности', footerContact:'Контакты', footerGithub:'GitHub',
+  },
+  de:{
+    heroTitle:'Kostenloser <span>Bildkonverter</span><br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Batch-Konvertierung, Größenänderung, Filter und Wasserzeichen. Alles lokal in Ihrem Browser — keine Uploads.',
+    dropTitle:'Bilder hier ablegen oder klicken', dropSub:'Mehrere Dateien möglich',
+    tabFormat:'🎨 Format', tabAdj:'🛠 Einstellungen', tabFilters:'✨ Filter', tabWm:'💧 Wasserzeichen',
+    secFormat:'Ausgabeformat', secUpload:'Bilder hochladen',
+    fmtPngDesc:'Verlustfrei + Alpha', fmtJpgDesc:'Kleine Größe', fmtWebpDesc:'Modern',
+    fmtIcoDesc:'Für Favicon', fmtGifDesc:'Animiert', fmtBmpDesc:'Unkomprimiert',
+    fmtAvifDesc:'Nächste Generation', fmtTiffDesc:'Druckqualität',
+    icoSizes:'ICO-Größen generieren',
+    icoNote:'💡 Jede ICO-Datei enthält alle ausgewählten Größen — ideal für Windows-Icons und Favicons.',
+    qualLabel:'Qualität', bgLabel:'Hintergrundfarbe (für Transparenz)', keepTransp:'Transparenz beibehalten',
+    resizeLabel:'Größe ändern', enableResize:'Größenänderung aktivieren', lockAspect:'Seitenverhältnis sperren', rotateLabel:'Drehen & Spiegeln',
+    presetsLabel:'Schnellvorlagen:',
+    wmLabel:'Wasserzeichentext', enableWm:'Wasserzeichen aktivieren', wmPlaceholder:'© Ihr Name 2025',
+    wmFontSize:'Schriftgröße', wmStyle:'Wasserzeichen-Stil',
+    btnConvertAll:'⚡ Alle konvertieren', btnZip:'📦 ZIP herunterladen', btnDownloadAll:'📥 Alle herunterladen', btnClear:'🗑 Löschen',
+    btnConvert:'⚡ Konvertieren', btnDownload:'📥 Herunterladen', btnCompare:'👁 Vergleichen', btnRemove:'✕',
+    statusDone:'✓ Fertig', statusPending:'⏳ Ausstehend',
+    converting:'Konvertieren...', allConverted:'✅ Alle konvertiert!', allAlready:'✅ Alle Dateien bereits konvertiert',
+    zipDone:'📦 ZIP heruntergeladen!', noFiles:'⚠️ Keine gültigen Bilddateien gefunden',
+    whyTitle:'Warum dieser Konverter?',
+    feat1t:'ICO mit mehreren Größen', feat1d:'Generiert .ico-Dateien mit 16×16 bis 256×256 Icons in einer Datei.',
+    feat2t:'100% Privat', feat2d:'Alle Verarbeitung im Browser via Canvas API. Keine Uploads, keine Server.',
+    feat3t:'Batch-Konvertierung', feat3d:'Dutzende Bilder auf einmal. Einzeln oder als ZIP herunterladen.',
+    feat4t:'Filter & Effekte', feat4d:'Helligkeit, Kontrast, Sättigung, Unschärfe, Sepia, Graustufen, Invertierung.',
+    feat5t:'Größe & Drehung', feat5d:'Exakte Pixel-Abmessungen mit Seitenverhältnis-Sperre. Drehen und Spiegeln.',
+    feat6t:'Wasserzeichen', feat6d:'Textliche Wasserzeichen mit einstellbarer Größe, Farbe und Position.',
+    faqTitle:'Häufige Fragen',
+    faq1q:'Wie konvertiere ich PNG zu ICO für ein Favicon?',
+    faq1a:'PNG hochladen, ICO als Ausgabeformat wählen, gewünschte Größen auswählen (16×16, 32×32 usw.), dann konvertieren. Die .ico-Datei enthält alle Größen — umbenennen zu favicon.ico und ins Website-Stammverzeichnis legen.',
+    faq2q:'Werden Bilder auf einen Server hochgeladen?',
+    faq2a:'Nein. Alles läuft lokal im Browser per Canvas API. Nach dem Laden der Seite funktioniert es auch ohne Internetverbindung.',
+    faq3q:'Unterschied zwischen WebP, AVIF und JPEG?',
+    faq3a:'JPEG ist universell kompatibel. WebP ist 25–34% kleiner als JPEG bei ähnlicher Qualität. AVIF kann bis zu 50% kleiner sein, Browser-Unterstützung wächst noch (Chrome, Firefox, Safari 16+).',
+    faq4q:'Können mehrere Bilder gleichzeitig konvertiert werden?',
+    faq4a:'Ja! Beliebig viele hochladen, einmal konfigurieren, "Alle konvertieren" klicken. ZIP für alle auf einmal herunterladen.',
+    faq5q:'Warum weicht die Dateigröße vom tatsächlichen Download ab?',
+    faq5a:'Größe wird aus base64 Canvas-Daten geschätzt — eine Näherung. Die tatsächliche Datei kann leicht abweichen. Bei ICO-Dateien hängt die Größe von den enthaltenen Varianten ab.',
+    histTitle:'Letzte Konvertierungen', histClear:'Verlauf löschen',
+    saved:'gespart', origLabel:'📷 Original', convLabel:'✨ Konvertiert',
+    beforeAfter:'Vorher / Nachher', closeBtn:'✕ Schließen',
+    footerText:'© 2025 Image.Convert — Alle Konvertierungen laufen lokal in Ihrem Browser.',
+    footerAbout:'Über uns', footerPrivacy:'Datenschutz', footerContact:'Kontakt', footerGithub:'GitHub',
+  },
+  es:{
+    heroTitle:'<span>Convertidor</span> de imágenes<br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Convierte, redimensiona, aplica filtros y marcas de agua. Todo ocurre en tu navegador — tus archivos nunca salen.',
+    dropTitle:'Arrastra imágenes aquí o haz clic', dropSub:'Múltiples archivos permitidos',
+    tabFormat:'🎨 Formato', tabAdj:'🛠 Ajustes', tabFilters:'✨ Filtros', tabWm:'💧 Marca de agua',
+    secFormat:'Formato de salida', secUpload:'Subir imágenes',
+    fmtPngDesc:'Sin pérdida + alpha', fmtJpgDesc:'Tamaño pequeño', fmtWebpDesc:'Moderno',
+    fmtIcoDesc:'Para favicon', fmtGifDesc:'Animado', fmtBmpDesc:'Sin comprimir',
+    fmtAvifDesc:'Nueva generación', fmtTiffDesc:'Calidad impresión',
+    icoSizes:'Tamaños ICO a generar',
+    icoNote:'💡 Cada archivo ICO contendrá todos los tamaños seleccionados — perfecto para favicons.',
+    qualLabel:'Calidad', bgLabel:'Color de fondo (para transparencia)', keepTransp:'Mantener transparencia',
+    resizeLabel:'Redimensionar', enableResize:'Activar redimensión', lockAspect:'Bloquear proporción', rotateLabel:'Rotar y voltear',
+    presetsLabel:'Presets rápidos:',
+    wmLabel:'Texto de marca de agua', enableWm:'Activar marca de agua', wmPlaceholder:'© Tu nombre 2025',
+    wmFontSize:'Tamaño fuente', wmStyle:'Estilo de marca',
+    btnConvertAll:'⚡ Convertir todo', btnZip:'📦 Descargar ZIP', btnDownloadAll:'📥 Descargar todo', btnClear:'🗑 Limpiar',
+    btnConvert:'⚡ Convertir', btnDownload:'📥 Descargar', btnCompare:'👁 Comparar', btnRemove:'✕',
+    statusDone:'✓ Listo', statusPending:'⏳ Pendiente',
+    converting:'Convirtiendo...', allConverted:'✅ ¡Todo convertido!', allAlready:'✅ Todos los archivos ya convertidos',
+    zipDone:'📦 ¡ZIP descargado!', noFiles:'⚠️ No se encontraron imágenes válidas',
+    whyTitle:'¿Por qué este convertidor?',
+    feat1t:'ICO con múltiples tamaños', feat1d:'Genera archivos .ico con tamaños de 16×16 a 256×256 en un solo archivo.',
+    feat2t:'100% Privado', feat2d:'Todo se procesa en tu navegador. Sin subidas, sin servidores, sin rastreo.',
+    feat3t:'Conversión en lote', feat3d:'Convierte decenas de imágenes a la vez. Descarga individual o como ZIP.',
+    feat4t:'Filtros y efectos', feat4d:'Brillo, contraste, saturación, desenfoque, sepia, escala de grises, inversión.',
+    feat5t:'Redimensionar y rotar', feat5d:'Dimensiones exactas con bloqueo de proporción. Rotar y voltear.',
+    feat6t:'Marca de agua', feat6d:'Marcas de agua de texto con tamaño, color, opacidad y posición ajustables.',
+    faqTitle:'Preguntas frecuentes',
+    faq1q:'¿Cómo convierto PNG a ICO para un favicon?',
+    faq1a:'Sube tu PNG, selecciona ICO como formato de salida, elige los tamaños que necesitas (16×16, 32×32, 48×48, etc.) y convierte. El archivo .ico resultante contiene todos los tamaños — renómbralo favicon.ico y colócalo en la raíz de tu sitio web.',
+    faq2q:'¿Se suben las imágenes a un servidor?',
+    faq2a:'Nunca. Todo ocurre localmente en tu navegador mediante la API Canvas. Las imágenes no se suben a ningún lado. Puedes incluso desconectarte de internet después de cargar la página y las conversiones seguirán funcionando.',
+    faq3q:'¿Diferencia entre WebP, AVIF y JPEG?',
+    faq3a:'JPEG es universal. WebP es 25–34% más pequeño que JPEG a calidad similar y lo soportan todos los navegadores modernos. AVIF puede ser 50% más pequeño, pero el soporte de navegadores aún crece (Chrome, Firefox, Safari 16+).',
+    faq4q:'¿Puedo convertir múltiples imágenes a la vez?',
+    faq4a:'¡Sí! Sube las que quieras, configura una vez, clic en "Convertir todo". Usa "Descargar ZIP" para obtener todos los archivos en un solo archivo.',
+    faq5q:'¿Por qué el tamaño estimado difiere del real?',
+    faq5a:'El tamaño se estima desde los datos base64 del canvas — es una aproximación. El archivo real puede diferir ligeramente. Para ICO, el tamaño depende de cuántas variantes se incluyen.',
+    histTitle:'Conversiones recientes', histClear:'Borrar historial',
+    saved:'ahorrado', origLabel:'📷 Original', convLabel:'✨ Convertido',
+    beforeAfter:'Antes / Después', closeBtn:'✕ Cerrar',
+    footerText:'© 2025 Image.Convert — Todas las conversiones ocurren localmente en tu navegador.',
+    footerAbout:'Acerca de', footerPrivacy:'Privacidad', footerContact:'Contacto', footerGithub:'GitHub',
+  },
+  fr:{
+    heroTitle:'<span>Convertisseur</span> d\'images<br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Conversion par lots, redimensionnement, filtres, filigranes. 100% privé — tout dans votre navigateur.',
+    dropTitle:'Déposez des images ou cliquez', dropSub:'Plusieurs fichiers autorisés',
+    tabFormat:'🎨 Format', tabAdj:'🛠 Réglages', tabFilters:'✨ Filtres', tabWm:'💧 Filigrane',
+    secFormat:'Format de sortie', secUpload:'Importer des images',
+    fmtPngDesc:'Sans perte + alpha', fmtJpgDesc:'Taille réduite', fmtWebpDesc:'Moderne',
+    fmtIcoDesc:'Pour favicon', fmtGifDesc:'Animé', fmtBmpDesc:'Non compressé',
+    fmtAvifDesc:'Nouvelle génération', fmtTiffDesc:'Qualité impression',
+    icoSizes:'Tailles ICO à générer',
+    icoNote:'💡 Chaque fichier ICO contiendra toutes les tailles sélectionnées — parfait pour les favicons.',
+    qualLabel:'Qualité', bgLabel:'Couleur de fond (pour la transparence)', keepTransp:'Conserver la transparence',
+    resizeLabel:'Redimensionner', enableResize:'Activer le redimensionnement', lockAspect:'Verrouiller les proportions', rotateLabel:'Rotation & Retournement',
+    presetsLabel:'Préréglages rapides :',
+    wmLabel:'Texte du filigrane', enableWm:'Activer le filigrane', wmPlaceholder:'© Votre nom 2025',
+    wmFontSize:'Taille de police', wmStyle:'Style du filigrane',
+    btnConvertAll:'⚡ Tout convertir', btnZip:'📦 Télécharger ZIP', btnDownloadAll:'📥 Tout télécharger', btnClear:'🗑 Effacer',
+    btnConvert:'⚡ Convertir', btnDownload:'📥 Télécharger', btnCompare:'👁 Comparer', btnRemove:'✕',
+    statusDone:'✓ Terminé', statusPending:'⏳ En attente',
+    converting:'Conversion...', allConverted:'✅ Tout converti !', allAlready:'✅ Tous les fichiers déjà convertis',
+    zipDone:'📦 ZIP téléchargé !', noFiles:'⚠️ Aucune image valide trouvée',
+    whyTitle:'Pourquoi ce convertisseur ?',
+    feat1t:'ICO avec plusieurs tailles', feat1d:'Génère des fichiers .ico de 16×16 à 256×256 en un seul fichier.',
+    feat2t:'100% Privé', feat2d:'Tout se passe dans votre navigateur. Aucun upload, aucun serveur.',
+    feat3t:'Conversion par lots', feat3d:'Convertissez des dizaines d\'images à la fois. ZIP ou fichiers individuels.',
+    feat4t:'Filtres & Effets', feat4d:'Luminosité, contraste, saturation, flou, sépia, niveaux de gris, inversion.',
+    feat5t:'Redimensionner & Rotation', feat5d:'Dimensions exactes avec verrouillage des proportions. Rotation et retournement.',
+    feat6t:'Filigrane', feat6d:'Filigranes textuels avec taille, couleur, opacité et position réglables.',
+    faqTitle:'Questions fréquentes',
+    faq1q:'Comment convertir PNG en ICO pour un favicon ?',
+    faq1a:'Téléchargez votre PNG, sélectionnez ICO comme format de sortie, choisissez les tailles (16×16, 32×32, 48×48, etc.) puis convertissez. Le fichier .ico résultant contient toutes les tailles sélectionnées — renommez-le favicon.ico et placez-le à la racine de votre site.',
+    faq2q:'Les images sont-elles envoyées sur un serveur ?',
+    faq2a:'Jamais. Tout est traité localement dans votre navigateur via l\'API Canvas. Vos images ne sont pas envoyées nulle part. Vous pouvez même vous déconnecter d\'internet après le chargement de la page.',
+    faq3q:'Différence entre WebP, AVIF et JPEG ?',
+    faq3a:'JPEG est universellement compatible. WebP est 25–34% plus petit que JPEG à qualité similaire. AVIF peut être 50% plus petit, mais le support des navigateurs est encore en développement (Chrome, Firefox, Safari 16+).',
+    faq4q:'Puis-je convertir plusieurs images à la fois ?',
+    faq4a:'Oui ! Importez autant d\'images que vous voulez, configurez une fois, cliquez sur "Tout convertir". Utilisez "Télécharger ZIP" pour tout récupérer en une seule archive.',
+    faq5q:'Pourquoi la taille estimée diffère-t-elle de la taille réelle ?',
+    faq5a:'La taille est estimée depuis les données base64 du canvas — c\'est une approximation proche. Le fichier réel peut différer légèrement. Pour les ICO, la taille dépend des variantes incluses.',
+    histTitle:'Conversions récentes', histClear:'Effacer l\'historique',
+    saved:'économisé', origLabel:'📷 Original', convLabel:'✨ Converti',
+    beforeAfter:'Avant / Après', closeBtn:'✕ Fermer',
+    footerText:'© 2025 Image.Convert — Toutes les conversions se font localement dans votre navigateur.',
+    footerAbout:'À propos', footerPrivacy:'Confidentialité', footerContact:'Contact', footerGithub:'GitHub',
+  },
+  zh:{
+    heroTitle:'免费<span>图像转换器</span><br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'批量转换、调整大小、滤镜和水印。所有处理都在您的浏览器中进行，文件不会离开您的设备。',
+    dropTitle:'将图像拖放到此处或点击浏览', dropSub:'支持多个文件',
+    tabFormat:'🎨 格式', tabAdj:'🛠 调整', tabFilters:'✨ 滤镜', tabWm:'💧 水印',
+    secFormat:'输出格式', secUpload:'上传图像',
+    fmtPngDesc:'无损 + 透明', fmtJpgDesc:'小文件', fmtWebpDesc:'现代格式',
+    fmtIcoDesc:'适合favicon', fmtGifDesc:'动画', fmtBmpDesc:'未压缩',
+    fmtAvifDesc:'新一代格式', fmtTiffDesc:'印刷质量',
+    icoSizes:'生成ICO尺寸',
+    icoNote:'💡 每个ICO文件将包含所有选定尺寸——非常适合Windows图标和favicon。',
+    qualLabel:'质量', bgLabel:'背景颜色（用于透明）', keepTransp:'保留透明度',
+    resizeLabel:'调整大小', enableResize:'启用调整大小', lockAspect:'锁定宽高比', rotateLabel:'旋转和翻转',
+    presetsLabel:'快速预设：',
+    wmLabel:'水印文字', enableWm:'启用水印', wmPlaceholder:'© 您的姓名 2025',
+    wmFontSize:'字体大小', wmStyle:'水印样式',
+    btnConvertAll:'⚡ 全部转换', btnZip:'📦 下载ZIP', btnDownloadAll:'📥 全部下载', btnClear:'🗑 清除',
+    btnConvert:'⚡ 转换', btnDownload:'📥 下载', btnCompare:'👁 对比', btnRemove:'✕',
+    statusDone:'✓ 完成', statusPending:'⏳ 等待中',
+    converting:'转换中...', allConverted:'✅ 全部完成！', allAlready:'✅ 所有文件已转换',
+    zipDone:'📦 ZIP已下载！', noFiles:'⚠️ 未找到有效图像文件',
+    whyTitle:'为什么选择此转换器？',
+    feat1t:'ICO多尺寸', feat1d:'生成包含16×16至256×256所有尺寸的.ico文件，适合favicon和Windows图标。',
+    feat2t:'100%私密', feat2d:'所有处理通过Canvas API在浏览器中进行，无需上传，无服务器。',
+    feat3t:'批量转换', feat3d:'一次转换数十张图像，单独下载或打包为ZIP。',
+    feat4t:'滤镜和效果', feat4d:'亮度、对比度、饱和度、模糊、棕褐色、灰度、反转。快速预设。',
+    feat5t:'调整大小和旋转', feat5d:'精确像素尺寸，可选宽高比锁定，旋转和翻转。',
+    feat6t:'水印', feat6d:'可调整大小、颜色、不透明度和位置的文字水印。',
+    faqTitle:'常见问题',
+    faq1q:'如何将PNG转换为ICO作为favicon？',
+    faq1a:'上传PNG，选择ICO作为输出格式，选择所需尺寸（16×16、32×32、48×48等），然后点击转换。生成的.ico文件包含所有选定尺寸——将文件重命名为favicon.ico并放在网站根目录。',
+    faq2q:'图像会上传到服务器吗？',
+    faq2a:'不会。所有转换通过Canvas API在浏览器本地进行，图像不会上传到任何地方。页面加载后无需互联网也可工作。',
+    faq3q:'WebP、AVIF和JPEG有什么区别？',
+    faq3a:'JPEG兼容性最广。WebP在相似质量下比JPEG小25-34%，所有现代浏览器均支持。AVIF可小50%，但浏览器支持仍在增长（Chrome、Firefox、Safari 16+）。',
+    faq4q:'可以同时转换多张图像吗？',
+    faq4a:'可以！上传任意数量，配置一次，点击"全部转换"。使用"下载ZIP"将所有文件打包为一个压缩包。',
+    faq5q:'为什么估计的文件大小与实际不同？',
+    faq5a:'大小从Canvas的base64数据估算——这是近似值，实际文件可能略有不同。对于ICO，大小取决于包含多少尺寸变体。',
+    histTitle:'最近转换', histClear:'清除历史',
+    saved:'已节省', origLabel:'📷 原始', convLabel:'✨ 已转换',
+    beforeAfter:'前后对比', closeBtn:'✕ 关闭',
+    footerText:'© 2025 Image.Convert — 所有转换都在您的浏览器中本地进行。',
+    footerAbout:'关于', footerPrivacy:'隐私政策', footerContact:'联系', footerGithub:'GitHub',
+  },
+  ja:{
+    heroTitle:'無料<span>画像コンバーター</span><br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'バッチ変換、リサイズ、フィルター、透かし。すべてブラウザで処理 — ファイルはデバイスから離れません。',
+    dropTitle:'画像をドロップまたはクリックして選択', dropSub:'複数ファイル対応',
+    tabFormat:'🎨 フォーマット', tabAdj:'🛠 調整', tabFilters:'✨ フィルター', tabWm:'💧 透かし',
+    secFormat:'出力フォーマット', secUpload:'画像をアップロード',
+    fmtPngDesc:'可逆 + 透明', fmtJpgDesc:'小サイズ', fmtWebpDesc:'モダン',
+    fmtIcoDesc:'Favicon用', fmtGifDesc:'アニメ', fmtBmpDesc:'非圧縮',
+    fmtAvifDesc:'次世代', fmtTiffDesc:'印刷品質',
+    icoSizes:'生成するICOサイズ',
+    icoNote:'💡 各ICOファイルには選択したすべてのサイズが含まれます — favicon に最適。',
+    qualLabel:'品質', bgLabel:'背景色（透明の場合）', keepTransp:'透明度を保持',
+    resizeLabel:'リサイズ', enableResize:'リサイズを有効化', lockAspect:'アスペクト比をロック', rotateLabel:'回転 & 反転',
+    presetsLabel:'クイックプリセット：',
+    wmLabel:'透かしテキスト', enableWm:'透かしを有効化', wmPlaceholder:'© あなたの名前 2025',
+    wmFontSize:'フォントサイズ', wmStyle:'透かしスタイル',
+    btnConvertAll:'⚡ すべて変換', btnZip:'📦 ZIPダウンロード', btnDownloadAll:'📥 すべてDL', btnClear:'🗑 クリア',
+    btnConvert:'⚡ 変換', btnDownload:'📥 ダウンロード', btnCompare:'👁 比較', btnRemove:'✕',
+    statusDone:'✓ 完了', statusPending:'⏳ 待機中',
+    converting:'変換中...', allConverted:'✅ すべて完了！', allAlready:'✅ すべてのファイルは変換済み',
+    zipDone:'📦 ZIPをダウンロードしました！', noFiles:'⚠️ 有効な画像ファイルが見つかりません',
+    whyTitle:'なぜこのコンバーター？',
+    feat1t:'ICO複数サイズ', feat1d:'.icoファイルに16×16から256×256まで格納 — Windowsアイコンとfaviconに最適。',
+    feat2t:'100%プライベート', feat2d:'Canvas APIでブラウザ内処理。アップロードなし、サーバーなし。',
+    feat3t:'バッチ変換', feat3d:'何十枚も一度に変換。個別またはZIPでダウンロード。',
+    feat4t:'フィルター＆エフェクト', feat4d:'明度、コントラスト、彩度、ぼかし、セピア、グレースケール、反転。',
+    feat5t:'リサイズ＆回転', feat5d:'正確なピクセル指定、アスペクト比ロック、回転と反転。',
+    feat6t:'透かし', feat6d:'サイズ、色、不透明度、位置を調整できるテキスト透かし。',
+    faqTitle:'よくある質問',
+    faq1q:'PNGをfavicon用ICOに変換するには？',
+    faq1a:'PNGをアップロードし、ICOを出力フォーマットとして選択、必要なサイズ（16×16、32×32、48×48など）を選んで変換します。生成された.icoファイルには選択したすべてのサイズが含まれます — favicon.icoにリネームしてサイトのルートに配置してください。',
+    faq2q:'画像はサーバーにアップロードされますか？',
+    faq2a:'されません。すべてCanvas APIでブラウザ内処理されます。画像はどこにも送信されません。ページ読み込み後はオフラインでも動作します。',
+    faq3q:'WebP、AVIF、JPEGの違いは？',
+    faq3a:'JPEGは最も互換性が高い。WebPはJPEGより25-34%小さく、すべての最新ブラウザで対応。AVIFは最大50%小さいが、ブラウザ対応は増加中（Chrome、Firefox、Safari 16+）。',
+    faq4q:'複数の画像を一度に変換できますか？',
+    faq4a:'はい！何枚でもアップロードして一度に設定し、「すべて変換」をクリック。ZIPでまとめてダウンロードできます。',
+    faq5q:'推定ファイルサイズが実際と異なるのはなぜ？',
+    faq5a:'CanvasのBase64データから推定しているためです。実際のファイルとは若干異なる場合があります。ICOファイルの場合、サイズは含まれるバリアント数によって異なります。',
+    histTitle:'最近の変換', histClear:'履歴をクリア',
+    saved:'節約', origLabel:'📷 元画像', convLabel:'✨ 変換後',
+    beforeAfter:'前後比較', closeBtn:'✕ 閉じる',
+    footerText:'© 2025 Image.Convert — すべての変換はブラウザ内でローカルに行われます。',
+    footerAbout:'概要', footerPrivacy:'プライバシー', footerContact:'お問い合わせ', footerGithub:'GitHub',
+  },
+  pt:{
+    heroTitle:'<span>Conversor</span> de imagens<br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'Converta em lote, redimensione, aplique filtros e marcas d\'água. Tudo no seu navegador, sem uploads.',
+    dropTitle:'Solte imagens aqui ou clique para navegar', dropSub:'Vários arquivos permitidos',
+    tabFormat:'🎨 Formato', tabAdj:'🛠 Ajustes', tabFilters:'✨ Filtros', tabWm:'💧 Marca d\'água',
+    secFormat:'Formato de saída', secUpload:'Enviar imagens',
+    fmtPngDesc:'Sem perda + alpha', fmtJpgDesc:'Tamanho pequeno', fmtWebpDesc:'Moderno',
+    fmtIcoDesc:'Para favicon', fmtGifDesc:'Animado', fmtBmpDesc:'Sem compressão',
+    fmtAvifDesc:'Próxima geração', fmtTiffDesc:'Qualidade impressão',
+    icoSizes:'Tamanhos ICO a gerar',
+    icoNote:'💡 Cada arquivo ICO conterá todos os tamanhos selecionados — perfeito para favicons.',
+    qualLabel:'Qualidade', bgLabel:'Cor de fundo (para transparência)', keepTransp:'Manter transparência',
+    resizeLabel:'Redimensionar', enableResize:'Ativar redimensionamento', lockAspect:'Bloquear proporção', rotateLabel:'Girar e inverter',
+    presetsLabel:'Predefinições rápidas:',
+    wmLabel:'Texto da marca d\'água', enableWm:'Ativar marca d\'água', wmPlaceholder:'© Seu nome 2025',
+    wmFontSize:'Tamanho da fonte', wmStyle:'Estilo da marca',
+    btnConvertAll:'⚡ Converter tudo', btnZip:'📦 Baixar ZIP', btnDownloadAll:'📥 Baixar tudo', btnClear:'🗑 Limpar',
+    btnConvert:'⚡ Converter', btnDownload:'📥 Baixar', btnCompare:'👁 Comparar', btnRemove:'✕',
+    statusDone:'✓ Pronto', statusPending:'⏳ Aguardando',
+    converting:'Convertendo...', allConverted:'✅ Tudo convertido!', allAlready:'✅ Todos os arquivos já convertidos',
+    zipDone:'📦 ZIP baixado!', noFiles:'⚠️ Nenhuma imagem válida encontrada',
+    whyTitle:'Por que este conversor?',
+    feat1t:'ICO com múltiplos tamanhos', feat1d:'Gera arquivos .ico de 16×16 a 256×256 em um único arquivo.',
+    feat2t:'100% Privado', feat2d:'Processamento via Canvas API no navegador. Sem uploads, sem servidores.',
+    feat3t:'Conversão em lote', feat3d:'Converta dezenas de imagens de uma vez. Individual ou em ZIP.',
+    feat4t:'Filtros e efeitos', feat4d:'Brilho, contraste, saturação, desfoque, sépia, escala de cinza, inversão.',
+    feat5t:'Redimensionar e girar', feat5d:'Dimensões exatas com trava de proporção. Girar e inverter.',
+    feat6t:'Marca d\'água', feat6d:'Marcas d\'água de texto com tamanho, cor, opacidade e posição ajustáveis.',
+    faqTitle:'Perguntas frequentes',
+    faq1q:'Como converter PNG em ICO para favicon?',
+    faq1a:'Envie seu PNG, selecione ICO como formato de saída, escolha os tamanhos necessários (16×16, 32×32, 48×48 etc.) e converta. O arquivo .ico resultante contém todos os tamanhos — renomeie para favicon.ico e coloque na raiz do site.',
+    faq2q:'As imagens são enviadas para um servidor?',
+    faq2a:'Nunca. Tudo é processado localmente no navegador via API Canvas. As imagens não são enviadas a lugar algum. Após carregar a página, funciona sem internet.',
+    faq3q:'Diferença entre WebP, AVIF e JPEG?',
+    faq3a:'JPEG é universalmente compatível. WebP é 25-34% menor que JPEG a qualidade similar. AVIF pode ser 50% menor, mas o suporte ainda cresce (Chrome, Firefox, Safari 16+).',
+    faq4q:'Posso converter várias imagens de uma vez?',
+    faq4a:'Sim! Envie quantas quiser, configure uma vez, clique em "Converter tudo". Use "Baixar ZIP" para obter todos os arquivos em uma única pasta.',
+    faq5q:'Por que o tamanho estimado difere do real?',
+    faq5a:'O tamanho é estimado dos dados base64 do canvas — é uma aproximação próxima. O arquivo real pode diferir ligeiramente. Para ICO, o tamanho depende de quantas variantes são incluídas.',
+    histTitle:'Conversões recentes', histClear:'Limpar histórico',
+    saved:'economizado', origLabel:'📷 Original', convLabel:'✨ Convertido',
+    beforeAfter:'Antes / Depois', closeBtn:'✕ Fechar',
+    footerText:'© 2025 Image.Convert — Todas as conversões ocorrem localmente no seu navegador.',
+    footerAbout:'Sobre', footerPrivacy:'Privacidade', footerContact:'Contato', footerGithub:'GitHub',
+  },
+  ar:{
+    heroTitle:'<span>محول الصور</span> المجاني<br>PNG · JPG · <span>ICO</span> · WebP',
+    heroDesc:'تحويل دفعي، تغيير الحجم، الفلاتر والعلامات المائية. كل المعالجة في متصفحك — ملفاتك لا تغادر جهازك.',
+    dropTitle:'اسحب الصور هنا أو انقر للتصفح', dropSub:'يدعم ملفات متعددة',
+    tabFormat:'🎨 التنسيق', tabAdj:'🛠 الإعدادات', tabFilters:'✨ الفلاتر', tabWm:'💧 العلامة المائية',
+    secFormat:'تنسيق الإخراج', secUpload:'رفع الصور',
+    fmtPngDesc:'بدون فقدان + شفافية', fmtJpgDesc:'حجم صغير', fmtWebpDesc:'حديث',
+    fmtIcoDesc:'للـ favicon', fmtGifDesc:'متحرك', fmtBmpDesc:'غير مضغوط',
+    fmtAvifDesc:'الجيل القادم', fmtTiffDesc:'جودة الطباعة',
+    icoSizes:'أحجام ICO للتوليد',
+    icoNote:'💡 سيحتوي كل ملف ICO على جميع الأحجام المحددة — مثالي للـ favicon.',
+    qualLabel:'الجودة', bgLabel:'لون الخلفية (للشفافية)', keepTransp:'الحفاظ على الشفافية',
+    resizeLabel:'تغيير الحجم', enableResize:'تفعيل تغيير الحجم', lockAspect:'قفل النسبة', rotateLabel:'التدوير والقلب',
+    presetsLabel:'إعدادات مسبقة:',
+    wmLabel:'نص العلامة المائية', enableWm:'تفعيل العلامة المائية', wmPlaceholder:'© اسمك 2025',
+    wmFontSize:'حجم الخط', wmStyle:'نمط العلامة',
+    btnConvertAll:'⚡ تحويل الكل', btnZip:'📦 تنزيل ZIP', btnDownloadAll:'📥 تنزيل الكل', btnClear:'🗑 مسح',
+    btnConvert:'⚡ تحويل', btnDownload:'📥 تنزيل', btnCompare:'👁 مقارنة', btnRemove:'✕',
+    statusDone:'✓ تم', statusPending:'⏳ انتظار',
+    converting:'جاري التحويل...', allConverted:'✅ تم تحويل الكل!', allAlready:'✅ جميع الملفات محولة بالفعل',
+    zipDone:'📦 تم تنزيل ZIP!', noFiles:'⚠️ لم يتم العثور على صور صالحة',
+    whyTitle:'لماذا هذا المحول؟',
+    feat1t:'ICO بأحجام متعددة', feat1d:'توليد ملفات .ico من 16×16 حتى 256×256 في ملف واحد.',
+    feat2t:'100% خاص', feat2d:'جميع المعالجة في المتصفح عبر Canvas API. بدون رفع أو خوادم.',
+    feat3t:'التحويل الدفعي', feat3d:'تحويل عشرات الصور دفعة واحدة. تنزيل فردي أو ZIP.',
+    feat4t:'الفلاتر والتأثيرات', feat4d:'السطوع، التباين، التشبع، الضبابية، السيبيا، الرمادي، الانعكاس.',
+    feat5t:'تغيير الحجم والتدوير', feat5d:'أبعاد دقيقة بالبكسل مع قفل النسبة. تدوير وقلب.',
+    feat6t:'العلامة المائية', feat6d:'علامات مائية نصية مع ضبط الحجم واللون والشفافية والموضع.',
+    faqTitle:'الأسئلة الشائعة',
+    faq1q:'كيف أحول PNG إلى ICO للـ favicon؟',
+    faq1a:'ارفع ملف PNG، اختر ICO كتنسيق إخراج، حدد الأحجام المطلوبة (16×16، 32×32، 48×48 إلخ)، ثم اضغط تحويل. الملف .ico الناتج يحتوي على جميع الأحجام المحددة — أعد تسميته إلى favicon.ico وضعه في جذر الموقع.',
+    faq2q:'هل يتم رفع الصور إلى خادم؟',
+    faq2a:'لا. كل التحويل يتم محلياً في المتصفح عبر Canvas API. لا يتم إرسال صورك إلى أي مكان. بعد تحميل الصفحة يعمل بدون إنترنت.',
+    faq3q:'الفرق بين WebP وAVIF وJPEG؟',
+    faq3a:'JPEG الأكثر توافقاً. WebP أصغر بـ 25-34% من JPEG بجودة مماثلة. AVIF أصغر بـ 50%، لكن دعم المتصفحات لا يزال ينمو (Chrome، Firefox، Safari 16+).',
+    faq4q:'هل يمكن تحويل عدة صور دفعة واحدة؟',
+    faq4a:'نعم! ارفع ما تشاء، اضبط الإعدادات مرة واحدة، اضغط "تحويل الكل". استخدم ZIP لتنزيل جميع الملفات في أرشيف واحد.',
+    faq5q:'لماذا يختلف الحجم التقديري عن الحجم الفعلي؟',
+    faq5a:'الحجم مقدَّر من بيانات base64 للـ canvas — وهو تقريب قريب. قد يختلف الملف الفعلي قليلاً. بالنسبة لـ ICO، يعتمد الحجم على عدد الأحجام المضمنة.',
+    histTitle:'آخر التحويلات', histClear:'مسح السجل',
+    saved:'محفوظ', origLabel:'📷 الأصلي', convLabel:'✨ المحوَّل',
+    beforeAfter:'قبل / بعد', closeBtn:'✕ إغلاق',
+    footerText:'© 2025 Image.Convert — جميع التحويلات تتم محلياً في متصفحك.',
+    footerAbout:'عن الموقع', footerPrivacy:'الخصوصية', footerContact:'اتصل بنا', footerGithub:'GitHub',
+  }
 };
 
-// State
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
 let files = [];
-let selectedFormat = 'image/jpeg';
-let currentLang = 'en';
-let currentTheme = 'light';
+let selectedFormat = 'jpeg';
+let rotation = 0;
+let flipH = false, flipV = false;
+let lang = 'en';
+let theme = 'dark';
 
-// Elements
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const settingsSection = document.getElementById('settingsSection');
-const filesList = document.getElementById('filesList');
-const actionButtons = document.getElementById('actionButtons');
-const formatOptions = document.querySelectorAll('.format-option');
-const qualitySlider = document.getElementById('qualitySlider');
-const qualityValue = document.getElementById('qualityValue');
-const resizeCheckbox = document.getElementById('resizeCheckbox');
-const resizeOptions = document.getElementById('resizeOptions');
-const widthSlider = document.getElementById('widthSlider');
-const widthValue = document.getElementById('widthValue');
-const aspectRatioCheckbox = document.getElementById('aspectRatioCheckbox');
-const convertBtn = document.getElementById('convertBtn');
+// ══════════════════════════════════════
+// DOM REFS
+// ══════════════════════════════════════
+const dropZone       = document.getElementById('dropZone');
+const fileInput      = document.getElementById('fileInput');
+const settingsCard   = document.getElementById('settingsCard');
+const filesList      = document.getElementById('filesList');
+const actionBtns     = document.getElementById('actionBtns');
+const convertAllBtn  = document.getElementById('convertAllBtn');
+const downloadZipBtn = document.getElementById('downloadZipBtn');
 const downloadAllBtn = document.getElementById('downloadAllBtn');
-const clearBtn = document.getElementById('clearBtn');
-const langSelector = document.getElementById('langSelector');
-const themeToggle = document.getElementById('themeToggle');
+const clearBtn       = document.getElementById('clearBtn');
+const qualSlider     = document.getElementById('qualSlider');
+const qualVal        = document.getElementById('qualVal');
+const resizeToggle   = document.getElementById('resizeToggle');
+const resW           = document.getElementById('resW');
+const resH           = document.getElementById('resH');
+const aspectLock     = document.getElementById('aspectLock');
+const bgColor        = document.getElementById('bgColor');
+const bgTransparent  = document.getElementById('bgTransparent');
+const wmToggle       = document.getElementById('wmToggle');
+const wmText         = document.getElementById('wmText');
+const wmSize         = document.getElementById('wmSize');
+const wmSizeVal      = document.getElementById('wmSizeVal');
+const wmColor        = document.getElementById('wmColor');
+const wmOpacity      = document.getElementById('wmOpacity');
+const wmOpVal        = document.getElementById('wmOpVal');
+const wmPos          = document.getElementById('wmPos');
 const historySection = document.getElementById('historySection');
-const historyList = document.getElementById('historyList');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const historyList    = document.getElementById('historyList');
+const clearHistBtn   = document.getElementById('clearHistBtn');
+const progressWrap   = document.getElementById('progressWrap');
+const progressBar    = document.getElementById('progressBar');
+const progressText   = document.getElementById('progressText');
+const progressLabel  = document.getElementById('progressLabel');
+const icoOptions     = document.getElementById('icoOptions');
+const qualityBox     = document.getElementById('qualityBox');
 
-// Initialize
+const filters = {
+  brightness: { el: document.getElementById('fBrightness'), val: document.getElementById('fBrVal'), unit:'%' },
+  contrast:   { el: document.getElementById('fContrast'),   val: document.getElementById('fCoVal'), unit:'%' },
+  saturate:   { el: document.getElementById('fSaturate'),   val: document.getElementById('fSaVal'), unit:'%' },
+  hue:        { el: document.getElementById('fHue'),        val: document.getElementById('fHuVal'), unit:'°' },
+  blur:       { el: document.getElementById('fBlur'),       val: document.getElementById('fBlVal'), unit:'px' },
+  sepia:      { el: document.getElementById('fSepia'),      val: document.getElementById('fSeVal'), unit:'%' },
+  grayscale:  { el: document.getElementById('fGray'),       val: document.getElementById('fGrVal'), unit:'%' },
+  invert:     { el: document.getElementById('fInvert'),     val: document.getElementById('fInVal'), unit:'%' },
+};
+
+// ══════════════════════════════════════
+// FAQ RENDER (динамический, с локализацией)
+// ══════════════════════════════════════
+function renderFaq() {
+  const t = T[lang] || T.en;
+  const faqs = [];
+  let i = 1;
+  while (t['faq' + i + 'q']) {
+    faqs.push({ q: t['faq' + i + 'q'], a: t['faq' + i + 'a'] });
+    i++;
+  }
+  const list = document.getElementById('faqList');
+  if (!list) return;
+  list.innerHTML = faqs.map((f, idx) => `
+    <div class="faq-item" id="faqItem${idx}">
+      <div class="faq-q" onclick="toggleFaq(${idx})">${f.q} <span class="faq-arrow">▾</span></div>
+      <div class="faq-a" id="faqA${idx}">${f.a}</div>
+    </div>
+  `).join('');
+}
+
+function toggleFaq(idx) {
+  const ans  = document.getElementById('faqA' + idx);
+  const item = document.getElementById('faqItem' + idx);
+  const isOpen = ans.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) { ans.classList.add('open'); item.classList.add('open'); }
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
 function init() {
-    loadTheme();
-    loadLanguage();
-    loadHistory();
-    setupEventListeners();
+  theme = localStorage.getItem('theme') || 'dark';
+  applyTheme();
+  lang = localStorage.getItem('lang') || navigator.language.split('-')[0];
+  if (!T[lang]) lang = 'en';
+  document.getElementById('langSel').value = lang;
+  applyLang();
+  loadHistory();
+  bindEvents();
 }
 
-// Theme
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    currentTheme = savedTheme;
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon();
+// ══════════════════════════════════════
+// THEME
+// ══════════════════════════════════════
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+document.getElementById('themeBtn').onclick = () => {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', theme);
+  applyTheme();
+};
+
+// ══════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════
+function applyLang() {
+  const t = T[lang] || T.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (t[k] !== undefined) el.innerHTML = t[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.dataset.i18nPh;
+    if (t[k] !== undefined) el.placeholder = t[k];
+  });
+  const tabKeys = { format:'tabFormat', adjustments:'tabAdj', filters:'tabFilters', watermark:'tabWm' };
+  document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+    const k = tabKeys[tab.dataset.tab];
+    if (k && t[k]) tab.textContent = t[k];
+  });
+  const fmtMap = { png:'fmtPngDesc', jpeg:'fmtJpgDesc', webp:'fmtWebpDesc', ico:'fmtIcoDesc', gif:'fmtGifDesc', bmp:'fmtBmpDesc', avif:'fmtAvifDesc', tiff:'fmtTiffDesc' };
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    const descEl = btn.querySelector('.fmt-desc');
+    const k = fmtMap[btn.dataset.format];
+    if (k && t[k] && descEl) descEl.textContent = t[k];
+  });
+  const posMap = { 'bottom-right':'wmBR', 'bottom-left':'wmBL', 'top-right':'wmTR', 'top-left':'wmTL', 'center':'wmC' };
+  const posLabels = { en:{ 'bottom-right':'Bottom Right','bottom-left':'Bottom Left','top-right':'Top Right','top-left':'Top Left','center':'Center' }, ru:{ 'bottom-right':'Снизу справа','bottom-left':'Снизу слева','top-right':'Сверху справа','top-left':'Сверху слева','center':'По центру' }, de:{ 'bottom-right':'Unten rechts','bottom-left':'Unten links','top-right':'Oben rechts','top-left':'Oben links','center':'Mitte' }, es:{ 'bottom-right':'Abajo derecha','bottom-left':'Abajo izquierda','top-right':'Arriba derecha','top-left':'Arriba izquierda','center':'Centro' }, fr:{ 'bottom-right':'Bas droite','bottom-left':'Bas gauche','top-right':'Haut droite','top-left':'Haut gauche','center':'Centre' }, zh:{ 'bottom-right':'右下','bottom-left':'左下','top-right':'右上','top-left':'左上','center':'中心' }, ja:{ 'bottom-right':'右下','bottom-left':'左下','top-right':'右上','top-left':'左上','center':'中央' }, pt:{ 'bottom-right':'Baixo direita','bottom-left':'Baixo esquerda','top-right':'Cima direita','top-left':'Cima esquerda','center':'Centro' }, ar:{ 'bottom-right':'أسفل اليمين','bottom-left':'أسفل اليسار','top-right':'أعلى اليمين','top-left':'أعلى اليسار','center':'الوسط' } };
+  const pl = posLabels[lang] || posLabels.en;
+  document.querySelectorAll('#wmPos option').forEach(opt => {
+    if (pl[opt.value]) opt.textContent = pl[opt.value];
+  });
+  const btnMap = { convertAllBtn:'btnConvertAll', downloadZipBtn:'btnZip', downloadAllBtn:'btnDownloadAll', clearBtn:'btnClear' };
+  Object.entries(btnMap).forEach(([id, k]) => {
+    const el = document.getElementById(id);
+    if (el && t[k]) el.innerHTML = t[k];
+  });
+  if (progressLabel) progressLabel.textContent = t.converting || 'Converting...';
+  renderFaq();
+  if (files.length) renderFiles();
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 }
 
-function toggleTheme() {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    localStorage.setItem('theme', currentTheme);
-    updateThemeIcon();
-}
+document.getElementById('langSel').onchange = e => {
+  lang = e.target.value;
+  localStorage.setItem('lang', lang);
+  applyLang();
+};
 
-function updateThemeIcon() {
-    themeToggle.querySelector('.theme-icon').textContent = currentTheme === 'light' ? '🌙' : '☀️';
-}
+// ══════════════════════════════════════
+// TABS
+// ══════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.onclick = () => {
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
+  };
+});
 
-// Language
-function loadLanguage() {
-    const savedLang = localStorage.getItem('language') || navigator.language.split('-')[0] || 'en';
-    currentLang = translations[savedLang] ? savedLang : 'en';
-    langSelector.value = currentLang;
-    updateLanguage();
-}
+// ══════════════════════════════════════
+// BIND EVENTS
+// ══════════════════════════════════════
+function bindEvents() {
+  dropZone.onclick = () => fileInput.click();
+  fileInput.onchange = e => handleFiles(e.target.files);
+  dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('dragover'); };
+  dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+  dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); };
 
-function updateLanguage() {
-    const t = translations[currentLang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) {
-            el.textContent = t[key];
-        }
-    });
-    document.documentElement.lang = currentLang;
-    if (currentLang === 'ar') {
-        document.documentElement.dir = 'rtl';
-    } else {
-        document.documentElement.dir = 'ltr';
-    }
-}
-
-// Event Listeners
-function setupEventListeners() {
-    dropZone.onclick = () => fileInput.click();
-    fileInput.onchange = (e) => handleFiles(e.target.files);
-    
-    dropZone.ondragover = (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedFormat = btn.dataset.format;
+      icoOptions.classList.toggle('hidden', selectedFormat !== 'ico');
+      qualityBox.classList.toggle('hidden', ['png','bmp','ico'].includes(selectedFormat));
     };
-    
-    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
-    
-    dropZone.ondrop = (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        handleFiles(e.dataTransfer.files);
-    };
+  });
 
-    formatOptions.forEach(option => {
-        option.onclick = () => selectFormat(option);
-    });
+  qualSlider.oninput = () => qualVal.textContent = qualSlider.value + '%';
 
-    qualitySlider.oninput = () => {
-        qualityValue.textContent = qualitySlider.value + '%';
-    };
+  resizeToggle.onchange = () => {
+    document.getElementById('resizeFields').style.opacity = resizeToggle.checked ? '1' : '.4';
+    document.getElementById('resizeFields').style.pointerEvents = resizeToggle.checked ? '' : 'none';
+  };
 
-    widthSlider.oninput = () => {
-        widthValue.textContent = widthSlider.value + 'px';
-    };
+  resW.oninput = () => { if (aspectLock.checked && files[0]) resH.value = Math.round(resW.value / (files[0].img.width / files[0].img.height)); };
+  resH.oninput = () => { if (aspectLock.checked && files[0]) resW.value = Math.round(resH.value * (files[0].img.width / files[0].img.height)); };
 
-    resizeCheckbox.onchange = () => {
-        resizeOptions.classList.toggle('hidden', !resizeCheckbox.checked);
-    };
+  wmSize.oninput = () => wmSizeVal.textContent = wmSize.value + 'px';
+  wmOpacity.oninput = () => wmOpVal.textContent = wmOpacity.value + '%';
 
-    convertBtn.onclick = convertAll;
-    downloadAllBtn.onclick = downloadAll;
-    clearBtn.onclick = clearAll;
-    
-    langSelector.onchange = (e) => {
-        currentLang = e.target.value;
-        localStorage.setItem('language', currentLang);
-        updateLanguage();
-    };
+  Object.entries(filters).forEach(([k, f]) => {
+    f.el.oninput = () => f.val.textContent = f.el.value + f.unit;
+  });
 
-    themeToggle.onclick = toggleTheme;
-    clearHistoryBtn.onclick = clearHistory;
+  convertAllBtn.onclick = convertAll;
+  downloadZipBtn.onclick = downloadZip;
+  downloadAllBtn.onclick = downloadAll;
+  clearBtn.onclick = clearAll;
+  clearHistBtn.onclick = () => { localStorage.removeItem('imgConvHistory'); loadHistory(); };
 }
 
-// Format Selection
-function selectFormat(option) {
-    formatOptions.forEach(opt => opt.classList.remove('selected'));
-    option.classList.add('selected');
-    selectedFormat = option.dataset.format;
+// ══════════════════════════════════════
+// ROTATE / FLIP
+// ══════════════════════════════════════
+function setRotate(deg) {
+  rotation = deg;
+  document.getElementById('rotateDisplay').textContent = deg + '°';
+}
+function toggleFlip(dir) {
+  if (dir === 'h') flipH = !flipH; else flipV = !flipV;
+  document.getElementById('flipDisplay').textContent =
+    (flipH && flipV) ? 'H+V' : flipH ? 'H' : flipV ? 'V' : 'none';
 }
 
-// File Handling
+// ══════════════════════════════════════
+// FILTER PRESETS
+// ══════════════════════════════════════
+function applyPreset(name) {
+  const presets = {
+    vintage:  { brightness:105, contrast:90,  saturate:80,  hue:20,  blur:0, sepia:40, grayscale:0,  invert:0 },
+    vivid:    { brightness:110, contrast:120, saturate:150, hue:0,   blur:0, sepia:0,  grayscale:0,  invert:0 },
+    noir:     { brightness:90,  contrast:120, saturate:0,   hue:0,   blur:0, sepia:0,  grayscale:100,invert:0 },
+    reset:    { brightness:100, contrast:100, saturate:100, hue:0,   blur:0, sepia:0,  grayscale:0,  invert:0 },
+  };
+  const p = presets[name]; if (!p) return;
+  filters.brightness.el.value = p.brightness; filters.brightness.val.textContent = p.brightness + '%';
+  filters.contrast.el.value   = p.contrast;   filters.contrast.val.textContent   = p.contrast   + '%';
+  filters.saturate.el.value   = p.saturate;   filters.saturate.val.textContent   = p.saturate   + '%';
+  filters.hue.el.value        = p.hue;        filters.hue.val.textContent        = p.hue        + '°';
+  filters.blur.el.value       = p.blur;       filters.blur.val.textContent       = p.blur       + 'px';
+  filters.sepia.el.value      = p.sepia;      filters.sepia.val.textContent      = p.sepia      + '%';
+  filters.grayscale.el.value  = p.grayscale;  filters.grayscale.val.textContent  = p.grayscale  + '%';
+  filters.invert.el.value     = p.invert;     filters.invert.val.textContent     = p.invert     + '%';
+}
+
+// ══════════════════════════════════════
+// FILE HANDLING
+// ══════════════════════════════════════
 function handleFiles(fileList) {
-    const newFiles = Array.from(fileList).filter(file => file.type.startsWith('image/'));
-    
-    newFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                files.push({
-                    file: file,
-                    name: file.name.split('.')[0],
-                    originalSize: file.size,
-                    image: img,
-                    dataUrl: e.target.result,
-                    converted: null,
-                    convertedSize: null
-                });
-                renderFiles();
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    settingsSection.classList.remove('hidden');
-    actionButtons.classList.remove('hidden');
+  const imgs = Array.from(fileList).filter(f => f.type.startsWith('image/') || f.name.endsWith('.ico') || f.name.endsWith('.svg'));
+  if (!imgs.length) return toast((T[lang]||T.en).noFiles, 'warn');
+  imgs.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        files.push({ file, name: file.name.replace(/\.[^.]+$/, ''), ext: file.name.split('.').pop(), originalSize: file.size, img, dataUrl: e.target.result, converted: null, convertedSize: 0, convertedUrl: null });
+        renderFiles();
+        if (files.length === 1) { resW.value = img.width; resH.value = img.height; }
+      };
+      img.onerror = () => { img.src = URL.createObjectURL(file); };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  settingsCard.classList.remove('hidden');
+  actionBtns.classList.remove('hidden');
 }
 
-// Render Files
+// ══════════════════════════════════════
+// RENDER FILES
+// ══════════════════════════════════════
 function renderFiles() {
-    if (files.length === 0) {
-        filesList.classList.add('hidden');
-        return;
-    }
-
-    filesList.classList.remove('hidden');
-    filesList.innerHTML = files.map((file, index) => `
-        <div class="file-item">
-            <img src="${file.dataUrl}" class="file-preview" alt="${file.name}">
-            <div class="file-info">
-                <div class="file-name">${file.name}</div>
-                <div class="file-size">${formatFileSize(file.originalSize)}</div>
-                ${file.convertedSize ? `
-                    <div class="size-comparison">
-                        <span class="size-badge size-original">${translations[currentLang].original}: ${formatFileSize(file.originalSize)}</span>
-                        <span class="size-badge size-converted">${translations[currentLang].converted}: ${formatFileSize(file.convertedSize)}</span>
-                        <span class="size-savings">↓ ${((1 - file.convertedSize / file.originalSize) * 100).toFixed(1)}% ${translations[currentLang].saved}</span>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="file-actions">
-                ${file.converted ? `
-                    <button class="btn btn-success" onclick="downloadSingle(${index})">
-                        <span>📥</span>
-                        <span data-i18n="download">${translations[currentLang].download}</span>
-                    </button>
-                ` : `
-                    <button class="btn btn-primary" onclick="convertSingle(${index})">
-                        <span>⚡</span>
-                        <span data-i18n="convert">${translations[currentLang].convert}</span>
-                    </button>
-                `}
-                <button class="btn btn-danger" onclick="removeFile(${index})">
-                    <span>🗑️</span>
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Convert Single
-function convertSingle(index) {
-    const file = files[index];
-    const converted = convertImage(file.image);
-    file.converted = converted.dataUrl;
-    file.convertedSize = converted.size;
-    renderFiles();
-    saveToHistory(file);
-}
-
-// Convert All
-function convertAll() {
-    files.forEach((file, index) => {
-        if (!file.converted) {
-            convertSingle(index);
+  const t = T[lang] || T.en;
+  filesList.classList.remove('hidden');
+  filesList.innerHTML = files.map((f, i) => `
+    <div class="file-item" draggable="true" data-index="${i}" ondragstart="dragStart(${i})" ondrop="dragDrop(event,${i})" ondragover="event.preventDefault()">
+      <span class="file-status ${f.converted ? 'status-ready' : 'status-waiting'}">${f.converted ? t.statusDone : t.statusPending}</span>
+      <img class="file-thumb" src="${f.dataUrl}" alt="${f.name}">
+      <div class="file-info">
+        <div class="file-name">${f.name}.${f.ext}</div>
+        <div class="file-meta">${f.img.width}×${f.img.height} · ${fmtSize(f.originalSize)}</div>
+        ${f.converted ? `<div class="size-row"><span class="sz sz-orig">${fmtSize(f.originalSize)}</span><span>→</span><span class="sz sz-conv">${fmtSize(f.convertedSize)}</span>${f.originalSize>0?`<span class="sz-save">↓ ${((1-f.convertedSize/f.originalSize)*100).toFixed(1)}% ${t.saved}</span>`:''}</div>` : ''}
+      </div>
+      <div class="file-actions">
+        ${f.converted
+          ? `<button class="btn btn-teal btn-sm" onclick="downloadSingle(${i})">${t.btnDownload}</button><button class="btn btn-ghost btn-sm" onclick="showCompare(${i})">${t.btnCompare}</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="convertSingle(${i})">${t.btnConvert}</button>`
         }
-    });
+        <button class="btn btn-danger btn-sm" onclick="removeFile(${i})">${t.btnRemove}</button>
+      </div>
+    </div>
+  `).join('');
 }
 
-// Convert Image
-function convertImage(img) {
-    const canvas = document.createElement('canvas');
-    let width = img.width;
-    let height = img.height;
+// ══════════════════════════════════════
+// DRAG REORDER
+// ══════════════════════════════════════
+let dragIdx = null;
+function dragStart(i) { dragIdx = i; }
+function dragDrop(e, targetIdx) {
+  e.preventDefault();
+  if (dragIdx === null || dragIdx === targetIdx) return;
+  const moved = files.splice(dragIdx, 1)[0];
+  files.splice(targetIdx, 0, moved);
+  dragIdx = null;
+  renderFiles();
+}
 
-    if (resizeCheckbox.checked) {
-        width = parseInt(widthSlider.value);
-        if (aspectRatioCheckbox.checked) {
-            height = Math.round(height * (width / img.width));
-        }
+// ══════════════════════════════════════
+// ICO ENCODER
+// ══════════════════════════════════════
+function buildIco(sourceCanvas) {
+  const icoCfg = [
+    { id:'ico16',  size:16  }, { id:'ico32',  size:32  }, { id:'ico48',  size:48  },
+    { id:'ico64',  size:64  }, { id:'ico128', size:128 }, { id:'ico256', size:256 },
+  ];
+  const selected = icoCfg.filter(c => document.getElementById(c.id)?.checked);
+  if (!selected.length) selected.push({ size:32 });
+  const pngs = selected.map(({ size }) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    c.getContext('2d').drawImage(sourceCanvas, 0, 0, size, size);
+    const b64 = c.toDataURL('image/png').split(',')[1];
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let j=0; j<bin.length; j++) bytes[j] = bin.charCodeAt(j);
+    return { size, bytes };
+  });
+  const n = pngs.length;
+  const headerBytes = 6 + n * 16;
+  let total = headerBytes;
+  pngs.forEach(p => total += p.bytes.length);
+  const buf = new ArrayBuffer(total);
+  const v = new DataView(buf);
+  const u8 = new Uint8Array(buf);
+  v.setUint16(0, 0, true); v.setUint16(2, 1, true); v.setUint16(4, n, true);
+  let offset = headerBytes;
+  pngs.forEach(({ size, bytes }, i) => {
+    const e = 6 + i * 16;
+    v.setUint8(e, size >= 256 ? 0 : size); v.setUint8(e+1, size >= 256 ? 0 : size);
+    v.setUint8(e+2, 0); v.setUint8(e+3, 0);
+    v.setUint16(e+4, 1, true); v.setUint16(e+6, 32, true);
+    v.setUint32(e+8, bytes.length, true); v.setUint32(e+12, offset, true);
+    u8.set(bytes, offset); offset += bytes.length;
+  });
+  return new Blob([buf], { type:'image/x-icon' });
+}
+
+// ══════════════════════════════════════
+// CONVERT IMAGE
+// ══════════════════════════════════════
+function convertImage(fileObj) {
+  const { img } = fileObj;
+  const canvas = document.createElement('canvas');
+  let w = img.width, h = img.height;
+  if (resizeToggle.checked) { w = parseInt(resW.value) || w; h = parseInt(resH.value) || h; }
+  const swapped = rotation === 90 || rotation === 270;
+  canvas.width  = swapped ? h : w;
+  canvas.height = swapped ? w : h;
+  const ctx = canvas.getContext('2d');
+  if (!bgTransparent.checked) { ctx.fillStyle = bgColor.value; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+  const br = filters.brightness.el.value, co = filters.contrast.el.value, sa = filters.saturate.el.value,
+        hu = filters.hue.el.value, bl = filters.blur.el.value, se = filters.sepia.el.value,
+        gr = filters.grayscale.el.value, inv = filters.invert.el.value;
+  ctx.filter = `brightness(${br}%) contrast(${co}%) saturate(${sa}%) hue-rotate(${hu}deg) blur(${bl}px) sepia(${se}%) grayscale(${gr}%) invert(${inv}%)`;
+  ctx.save();
+  ctx.translate(canvas.width/2, canvas.height/2);
+  if (rotation) ctx.rotate(rotation * Math.PI / 180);
+  if (flipH) ctx.scale(-1, 1);
+  if (flipV) ctx.scale(1, -1);
+  ctx.drawImage(img, -w/2, -h/2, w, h);
+  ctx.restore();
+  ctx.filter = 'none';
+  if (wmToggle.checked && wmText.value.trim()) {
+    const sz = parseInt(wmSize.value), op = parseInt(wmOpacity.value) / 100;
+    ctx.save();
+    ctx.globalAlpha = op;
+    ctx.font = `bold ${sz}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.fillStyle = wmColor.value;
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 4;
+    const tw = ctx.measureText(wmText.value).width, pad = 16;
+    const pos = wmPos.value;
+    let x, y;
+    if (pos==='bottom-right')      { x=canvas.width-tw-pad; y=canvas.height-pad; }
+    else if (pos==='bottom-left')  { x=pad; y=canvas.height-pad; }
+    else if (pos==='top-right')    { x=canvas.width-tw-pad; y=sz+pad; }
+    else if (pos==='top-left')     { x=pad; y=sz+pad; }
+    else                            { x=(canvas.width-tw)/2; y=(canvas.height+sz)/2; }
+    ctx.fillText(wmText.value, x, y);
+    ctx.restore();
+  }
+  if (selectedFormat === 'ico') {
+    const blob = buildIco(canvas);
+    return { blob, size: blob.size, dataUrl: canvas.toDataURL('image/png') };
+  }
+  const mimeMap = { jpeg:'image/jpeg', png:'image/png', webp:'image/webp', gif:'image/gif', bmp:'image/bmp', avif:'image/avif', tiff:'image/tiff' };
+  const mime = mimeMap[selectedFormat] || 'image/jpeg';
+  const quality = parseInt(qualSlider.value) / 100;
+  const dataUrl = canvas.toDataURL(mime, quality);
+  const b64len = dataUrl.split(',')[1]?.length || 0;
+  return { dataUrl, blob: null, size: Math.round((b64len * 3) / 4) };
+}
+
+// ══════════════════════════════════════
+// CONVERT SINGLE / ALL
+// ══════════════════════════════════════
+function convertSingle(i) {
+  const f = files[i];
+  const result = convertImage(f);
+  f.converted = true; f.convertedDataUrl = result.dataUrl;
+  f.convertedBlob = result.blob; f.convertedSize = result.size;
+  renderFiles(); saveHistory(f); checkAllConverted();
+}
+
+async function convertAll() {
+  const t = T[lang] || T.en;
+  const pending = files.filter(f => !f.converted);
+  if (!pending.length) { toast(t.allAlready, 'ok'); return; }
+  progressWrap.classList.remove('hidden');
+  if (progressLabel) progressLabel.textContent = t.converting;
+  let done = 0;
+  for (const f of files) {
+    if (!f.converted) {
+      convertSingle(files.indexOf(f));
+      done++;
+      progressBar.style.width = (done / pending.length * 100) + '%';
+      progressText.textContent = `${done} / ${pending.length}`;
+      await new Promise(r => setTimeout(r, 30));
     }
-
-    canvas.width = width;
-    canvas.height = height;
-    
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, width, height);
-    
-    const quality = qualitySlider.value / 100;
-    const dataUrl = canvas.toDataURL(selectedFormat, quality);
-    
-    // Calculate approximate size
-    const base64Length = dataUrl.split(',')[1].length;
-    const size = Math.round((base64Length * 3) / 4);
-    
-    return { dataUrl, size };
+  }
+  setTimeout(() => progressWrap.classList.add('hidden'), 800);
+  toast(t.allConverted, 'ok');
 }
 
-// Download Single
-function downloadSingle(index) {
-    const file = files[index];
-    if (!file.converted) return;
-    
-    const extension = selectedFormat.split('/')[1];
-    const link = document.createElement('a');
-    link.download = `${file.name}.${extension}`;
-    link.href = file.converted;
-    link.click();
+function checkAllConverted() {
+  downloadZipBtn.disabled = !files.every(f => f.converted);
+  downloadAllBtn.disabled = !files.some(f => f.converted);
 }
 
-// Download All
+// ══════════════════════════════════════
+// DOWNLOAD
+// ══════════════════════════════════════
+function downloadSingle(i) {
+  const f = files[i];
+  const ext = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+  const a = document.createElement('a');
+  a.href = f.convertedBlob ? URL.createObjectURL(f.convertedBlob) : f.convertedDataUrl;
+  a.download = `${f.name}.${ext}`;
+  a.click();
+}
+
 function downloadAll() {
-    files.forEach((file, index) => {
-        if (file.converted) {
-            setTimeout(() => downloadSingle(index), index * 100);
-        }
-    });
+  files.forEach((f, i) => { if (f.converted) setTimeout(() => downloadSingle(i), i * 150); });
 }
 
-// Remove File
-function removeFile(index) {
-    files.splice(index, 1);
-    renderFiles();
-    if (files.length === 0) {
-        settingsSection.classList.add('hidden');
-        actionButtons.classList.add('hidden');
-    }
+async function downloadZip() {
+  if (!window.JSZip) { toast('⚠️ JSZip not loaded.', 'warn'); return; }
+  const zip = new JSZip();
+  const ext = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+  for (const f of files) {
+    if (!f.converted) continue;
+    if (f.convertedBlob) zip.file(`${f.name}.${ext}`, f.convertedBlob);
+    else { const b64 = f.convertedDataUrl.split(',')[1]; zip.file(`${f.name}.${ext}`, b64, { base64:true }); }
+  }
+  const blob = await zip.generateAsync({ type:'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `converted-images-${Date.now()}.zip`;
+  a.click();
+  toast((T[lang]||T.en).zipDone, 'ok');
 }
 
-// Clear All
+// ══════════════════════════════════════
+// COMPARE SLIDER
+// ══════════════════════════════════════
+function showCompare(i) {
+  const f = files[i]; if (!f.converted) return;
+  const t = T[lang] || T.en;
+  const compareDataUrl = f.convertedDataUrl || f.dataUrl;
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:1.5rem';
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+  modal.innerHTML = `
+    <div style="max-width:800px;width:100%;background:var(--surf);border-radius:var(--r);padding:1.5rem;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <span style="font-weight:700;font-family:var(--mono);color:var(--acc)">${t.beforeAfter}</span>
+        <button onclick="this.closest('[style*=fixed]').remove()" class="btn btn-ghost btn-sm">${t.closeBtn}</button>
+      </div>
+      <div class="compare-wrap" id="cmpWrap">
+        <img class="compare-img" src="${f.dataUrl}" alt="original">
+        <div class="compare-after" id="cmpAfter" style="width:50%"><img src="${compareDataUrl}" alt="converted"></div>
+        <div class="compare-handle" id="cmpHandle" style="left:50%"></div>
+      </div>
+      <div class="compare-labels"><span>${t.origLabel} (${fmtSize(f.originalSize)})</span><span>${t.convLabel} (${fmtSize(f.convertedSize)})</span></div>
+    </div>`;
+  document.body.appendChild(modal);
+  const wrap = modal.querySelector('#cmpWrap');
+  const after = modal.querySelector('#cmpAfter');
+  const handle = modal.querySelector('#cmpHandle');
+  let dragging = false;
+  handle.onmousedown = () => dragging = true;
+  handle.ontouchstart = () => dragging = true;
+  document.onmouseup = document.ontouchend = () => dragging = false;
+  function move(clientX) {
+    if (!dragging) return;
+    const rect = wrap.getBoundingClientRect();
+    const pct = Math.min(100, Math.max(0, (clientX - rect.left) / rect.width * 100));
+    after.style.width = pct + '%'; handle.style.left = pct + '%';
+  }
+  wrap.onmousemove = e => move(e.clientX);
+  wrap.ontouchmove = e => move(e.touches[0].clientX);
+}
+
+// ══════════════════════════════════════
+// REMOVE / CLEAR
+// ══════════════════════════════════════
+function removeFile(i) {
+  files.splice(i, 1);
+  renderFiles();
+  if (!files.length) clearAll();
+}
+
 function clearAll() {
-    files = [];
-    renderFiles();
-    settingsSection.classList.add('hidden');
-    actionButtons.classList.add('hidden');
-    fileInput.value = '';
+  files = [];
+  filesList.classList.add('hidden');
+  settingsCard.classList.add('hidden');
+  actionBtns.classList.add('hidden');
+  fileInput.value = '';
+  downloadZipBtn.disabled = true;
+  downloadAllBtn.disabled = true;
 }
 
-// Format File Size
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function fmtSize(b) {
+  if (!b) return '0 B';
+  const k = 1024, s = ['B','KB','MB','GB'];
+  const i = Math.floor(Math.log(b)/Math.log(k));
+  return (b/Math.pow(k,i)).toFixed(2) + ' ' + s[i];
 }
 
-// History
-function saveToHistory(file) {
-    const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
-    history.unshift({
-        name: file.name,
-        format: selectedFormat.split('/')[1].toUpperCase(),
-        originalSize: file.originalSize,
-        convertedSize: file.convertedSize,
-        date: new Date().toISOString()
-    });
-    localStorage.setItem('conversionHistory', JSON.stringify(history.slice(0, 10)));
-    loadHistory();
+// ══════════════════════════════════════
+// HISTORY
+// ══════════════════════════════════════
+function saveHistory(f) {
+  let h = JSON.parse(localStorage.getItem('imgConvHistory') || '[]');
+  h.unshift({ name:f.name, to:selectedFormat.toUpperCase(), orig:f.originalSize, conv:f.convertedSize, date:new Date().toISOString() });
+  localStorage.setItem('imgConvHistory', JSON.stringify(h.slice(0,15)));
+  loadHistory();
 }
 
 function loadHistory() {
-    const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
-    if (history.length === 0) {
-        historySection.classList.add('hidden');
-        return;
-    }
-    
-    historySection.classList.remove('hidden');
-    historyList.innerHTML = history.map(item => `
-        <div class="history-item">
-            <span>${item.name} → ${item.format}</span>
-            <span>${((1 - item.convertedSize / item.originalSize) * 100).toFixed(1)}% ${translations[currentLang].saved}</span>
-        </div>
-    `).join('');
+  let h = JSON.parse(localStorage.getItem('imgConvHistory') || '[]');
+  if (!h.length) { historySection.classList.add('hidden'); return; }
+  historySection.classList.remove('hidden');
+  historyList.innerHTML = h.map(item => `
+    <div class="hist-item">
+      <span class="hist-name">${item.name} → ${item.to}</span>
+      <span class="hist-meta">${new Date(item.date).toLocaleString()}</span>
+      <span class="hist-save">${((1-item.conv/item.orig)*100).toFixed(1)}% saved</span>
+    </div>`).join('');
 }
 
-function clearHistory() {
-    localStorage.removeItem('conversionHistory');
-    historySection.classList.add('hidden');
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+function toast(msg, type='ok') {
+  const tw = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  tw.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
 }
 
-// Start
+// ══════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════
+document.onkeydown = e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && files.length) convertAll();
+};
+
+// ══════════════════════════════════════
+// RESIZE INIT
+// ══════════════════════════════════════
+document.getElementById('resizeFields').style.opacity = '.4';
+document.getElementById('resizeFields').style.pointerEvents = 'none';
+
 init();
 </script>
-
 </body>
 </html>
