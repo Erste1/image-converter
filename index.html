@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Image Converter - Free & Fast (PNG, JPG, WebP)</title>
+    <meta name="description" content="Free online image converter. Convert PNG, JPG, WebP and more. Online, fast and secure without uploading to server.">
+    <meta name="keywords" content="image converter, конвертер картинок, convertidor de imágenes, convertisseur d'images, 图像转换器">
+    <style>
+        :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #f5f5f7; color: #1d1d1f; }
+        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 500px; text-align: center; }
+        #drop-zone { border: 2px dashed #007aff; border-radius: 15px; padding: 40px; margin-bottom: 20px; cursor: pointer; transition: background 0.3s; }
+        #drop-zone.hover { background: #e3efff; }
+        select, button { padding: 12px 20px; border-radius: 10px; border: 1px solid #d2d2d7; font-size: 16px; margin-top: 10px; width: 100%; }
+        button { background: #007aff; color: white; border: none; font-weight: 600; cursor: pointer; display: none; }
+        button:hover { background: #0056b3; }
+        #preview { max-width: 100%; height: auto; margin-top: 20px; border-radius: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Image Converter</h2>
+    <div id="drop-zone">Drop image here or click to upload</div>
+    <input type="file" id="file-input" accept="image/*" style="display: none;">
+    
+    <div id="settings" style="display: none;">
+        <label for="format">Select format:</label>
+        <select id="format">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+        </select>
+        <img id="preview">
+        <button id="download-btn">Download Image</button>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const settings = document.getElementById('settings');
+    const formatSelect = document.getElementById('format');
+    const downloadBtn = document.getElementById('download-btn');
+    const preview = document.getElementById('preview');
+
+    let originalImage = null;
+    let fileName = 'converted-image';
+
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => handleFile(e.target.files[0]);
+
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('hover'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('hover');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('hover');
+        handleFile(e.dataTransfer.files[0]);
+    };
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        fileName = file.name.split('.')[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                originalImage = img;
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                settings.style.display = 'block';
+                downloadBtn.style.display = 'block';
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    downloadBtn.onclick = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(originalImage, 0, 0);
+        const selectedFormat = formatSelect.value;
+        const extension = selectedFormat.split('/')[1];
+        const link = document.createElement('a');
+        link.download = `${fileName}.${extension}`;
+        link.href = canvas.toDataURL(selectedFormat, 0.9);
+        link.click();
+    };
+</script>
+
+</body>
+</html>
